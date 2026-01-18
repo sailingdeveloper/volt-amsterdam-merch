@@ -88,35 +88,37 @@
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                            @if($product->hasSizes())
+                            <div class="flex flex-wrap gap-4">
+                                @if($product->hasSizes())
+                                    <div>
+                                        <label for="size" class="block text-sm font-medium text-gray-700 mb-2">
+                                            {{ __('shop.size') }}
+                                        </label>
+                                        <select name="size" id="size" required
+                                                class="w-full bg-white text-gray-700 font-medium py-2.5 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-volt-purple focus:border-volt-purple cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%236b7280%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-10">
+                                            <option value="">{{ __('shop.select_size') }}</option>
+                                            @foreach($product->ordered_sizes as $size => $stock)
+                                                @if($stock > 0)
+                                                    <option value="{{ $size }}">{{ $size }}</option>
+                                                @else
+                                                    <option value="{{ $size }}" disabled>{{ $size }} - {{ __('shop.out_of_stock') }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+
                                 <div>
-                                    <label for="size" class="block text-sm font-medium text-gray-700 mb-2">
-                                        {{ __('shop.size') }}
+                                    <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">
+                                        {{ __('shop.quantity') }}
                                     </label>
-                                    <select name="size" id="size" required
-                                            class="block w-full sm:w-48 rounded-lg border-gray-300 shadow-sm focus:border-volt-purple focus:ring-volt-purple">
-                                        <option value="">{{ __('shop.select_size') }}</option>
-                                        @foreach($product->ordered_sizes as $size => $stock)
-                                            @if($stock > 0)
-                                                <option value="{{ $size }}">{{ $size }}</option>
-                                            @else
-                                                <option value="{{ $size }}" disabled>{{ $size }} - {{ __('shop.out_of_stock') }}</option>
-                                            @endif
-                                        @endforeach
+                                    <select name="quantity" id="quantity"
+                                            class="w-20 bg-white text-gray-700 font-medium py-2.5 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-volt-purple focus:border-volt-purple cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%236b7280%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-10">
+                                        @for($i = 1; $i <= 10; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
-                            @endif
-
-                            <div>
-                                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">
-                                    {{ __('shop.quantity') }}
-                                </label>
-                                <select name="quantity" id="quantity"
-                                        class="block w-24 rounded-lg border-gray-300 shadow-sm focus:border-volt-purple focus:ring-volt-purple">
-                                    @for($i = 1; $i <= 10; $i++)
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
-                                </select>
                             </div>
 
                             <button type="submit"
