@@ -20,13 +20,13 @@ class CartController extends Controller
      */
     public function index(): View
     {
-        $allItem = $this->cartService->getItemWithProduct();
+        $items = $this->cartService->getItemWithProduct();
         $subtotal = $this->cartService->getFormattedSubtotal();
         $fee = $this->cartService->getFormattedFee();
         $total = $this->cartService->getFormattedTotal();
         $isEmpty = $this->cartService->isEmpty();
 
-        return view('cart.index', compact('allItem', 'subtotal', 'fee', 'total', 'isEmpty'));
+        return view('cart.index', compact('items', 'subtotal', 'fee', 'total', 'isEmpty'));
     }
 
     /**

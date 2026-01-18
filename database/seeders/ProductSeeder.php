@@ -43,7 +43,7 @@ Er zijn hoodies, long-sleeves en sjalen. Niet alleen in het paars, want dat is n
     {
         // Copy seed images to storage.
         $this->copyImageToStorage();
-        $allProduct = [
+        $products = [
             // Beer.
             [
                 'name' => 'Voltreffer Sixpack',
@@ -93,7 +93,7 @@ Om deze fietsbel te bemachtigen, stuur je een mailtje naar Eerke (eerke.steller@
 Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen.",
                 'price' => 2000,
                 'stock' => 100,
-                'image' => 'products/bike-bell.jpg',
+                'image' => 'products/bell.jpg',
                 'active' => true,
                 'orderable' => false,
             ],
@@ -107,8 +107,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 4900,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
-                'image' => 'products/hoodie-purple-front.jpg',
-                'images' => ['products/hoodie-purple-back.jpg'],
+                'image' => 'products/hoodie-purple-front.png',
+                'images' => ['products/hoodie-purple-back.png'],
                 'active' => true,
             ],
             // Hoodie White.
@@ -122,7 +122,7 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
                 'image' => 'products/hoodie-white-front.jpg',
-                'images' => ['products/hoodie-white-back.jpg'],
+                'images' => ['products/hoodie-white-back.png'],
                 'active' => true,
             ],
             // Long-sleeve shirt Purple.
@@ -135,8 +135,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 2800,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
-                'image' => 'products/longsleeve-purple-front.jpg',
-                'images' => ['products/longsleeve-purple-back.jpg'],
+                'image' => 'products/shirt-purple-front.png',
+                'images' => ['products/shirt-purple-back.png'],
                 'active' => true,
             ],
             // Long-sleeve shirt White.
@@ -149,8 +149,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 2800,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
-                'image' => 'products/longsleeve-white-front.jpg',
-                'images' => ['products/longsleeve-white-back.jpg'],
+                'image' => 'products/shirt-white-front.png',
+                'images' => ['products/shirt-white-back.png'],
                 'active' => true,
             ],
             // Scarf White.
@@ -168,7 +168,7 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
             ],
         ];
 
-        foreach ($allProduct as $product) {
+        foreach ($products as $product) {
             Product::create($product);
         }
     }
@@ -188,8 +188,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
         Storage::disk('public')->makeDirectory('products');
 
         // Copy all images from seed directory to storage.
-        $allFile = glob($seedImagePath . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
-        foreach ($allFile as $file) {
+        $files = glob($seedImagePath . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+        foreach ($files as $file) {
             $filename = basename($file);
             $destination = 'products/' . $filename;
 

@@ -168,12 +168,12 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id, 2);
 
-        $allItem = $this->cartService->getItemWithProduct();
+        $items = $this->cartService->getItemWithProduct();
 
-        $this->assertCount(1, $allItem);
-        $this->assertEquals('Test Product', $allItem[0]['product']->name);
-        $this->assertEquals(2, $allItem[0]['quantity']);
-        $this->assertEquals(5000, $allItem[0]['subtotal']);
+        $this->assertCount(1, $items);
+        $this->assertEquals('Test Product', $items[0]['product']->name);
+        $this->assertEquals(2, $items[0]['quantity']);
+        $this->assertEquals(5000, $items[0]['subtotal']);
     }
 
     public function test_get_items_with_product_filters_deleted_products(): void
@@ -183,9 +183,9 @@ class CartServiceTest extends TestCase
         $this->cartService->add($product->id);
         $product->delete();
 
-        $allItem = $this->cartService->getItemWithProduct();
+        $items = $this->cartService->getItemWithProduct();
 
-        $this->assertCount(0, $allItem);
+        $this->assertCount(0, $items);
     }
 
     public function test_can_add_item_with_size(): void
@@ -194,10 +194,10 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id, 1, 'M');
 
-        $allItem = $this->cartService->getItem();
+        $items = $this->cartService->getItem();
 
-        $this->assertCount(1, $allItem);
-        $this->assertEquals('M', $allItem[0]['size']);
+        $this->assertCount(1, $items);
+        $this->assertEquals('M', $items[0]['size']);
     }
 
     public function test_same_product_different_sizes_are_separate(): void
@@ -207,9 +207,9 @@ class CartServiceTest extends TestCase
         $this->cartService->add($product->id, 1, 'S');
         $this->cartService->add($product->id, 1, 'M');
 
-        $allItem = $this->cartService->getItem();
+        $items = $this->cartService->getItem();
 
-        $this->assertCount(2, $allItem);
+        $this->assertCount(2, $items);
         $this->assertEquals(2, $this->cartService->getCount());
     }
 
@@ -220,9 +220,9 @@ class CartServiceTest extends TestCase
         $this->cartService->add($product->id, 2, 'M');
         $this->cartService->add($product->id, 3, 'M');
 
-        $allItem = $this->cartService->getItem();
+        $items = $this->cartService->getItem();
 
-        $this->assertCount(1, $allItem);
+        $this->assertCount(1, $items);
         $this->assertEquals(5, $this->cartService->getCount());
     }
 
@@ -244,10 +244,10 @@ class CartServiceTest extends TestCase
         $this->cartService->add($product->id, 2, 'M');
         $this->cartService->remove($product->id, 'S');
 
-        $allItem = $this->cartService->getItem();
+        $items = $this->cartService->getItem();
 
-        $this->assertCount(1, $allItem);
-        $this->assertEquals('M', $allItem[0]['size']);
+        $this->assertCount(1, $items);
+        $this->assertEquals('M', $items[0]['size']);
     }
 
     public function test_get_items_with_product_includes_size(): void
@@ -259,9 +259,9 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id, 2, 'L');
 
-        $allItem = $this->cartService->getItemWithProduct();
+        $items = $this->cartService->getItemWithProduct();
 
-        $this->assertCount(1, $allItem);
-        $this->assertEquals('L', $allItem[0]['size']);
+        $this->assertCount(1, $items);
+        $this->assertEquals('L', $items[0]['size']);
     }
 }

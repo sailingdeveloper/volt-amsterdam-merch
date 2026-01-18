@@ -20,5 +20,13 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('dSK39CBgs2qMifLu'),
             ]
         );
+
+        User::firstOrCreate(
+            ['email' => 'eerke.steller@volteuropa.org'],
+            [
+                'name' => 'Eerke Steller',
+                'password' => Hash::make('Eerke123!!'),
+            ]
+        );
     }
 }

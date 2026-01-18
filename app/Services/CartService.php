@@ -25,10 +25,10 @@ class CartService
      */
     public function add(int $productId, int $quantity = 1, ?string $size = null): void
     {
-        $allItem = $this->getItem()->toArray();
+        $items = $this->getItem()->toArray();
         $found = false;
 
-        foreach ($allItem as &$item) {
+        foreach ($items as &$item) {
             if ($item['product_id'] === $productId && ($item['size'] ?? null) === $size) {
                 $item['quantity'] += $quantity;
                 $found = true;
@@ -37,14 +37,14 @@ class CartService
         }
 
         if ($found === false) {
-            $allItem[] = [
+            $items[] = [
                 'product_id' => $productId,
                 'quantity' => $quantity,
                 'size' => $size,
             ];
         }
 
-        Session::put(self::SESSION_KEY, $allItem);
+        Session::put(self::SESSION_KEY, $items);
     }
 
     /**
@@ -57,16 +57,16 @@ class CartService
             return;
         }
 
-        $allItem = $this->getItem()->toArray();
+        $items = $this->getItem()->toArray();
 
-        foreach ($allItem as &$item) {
+        foreach ($items as &$item) {
             if ($item['product_id'] === $productId && ($item['size'] ?? null) === $size) {
                 $item['quantity'] = $quantity;
                 break;
             }
         }
 
-        Session::put(self::SESSION_KEY, $allItem);
+        Session::put(self::SESSION_KEY, $items);
     }
 
     /**
@@ -74,7 +74,7 @@ class CartService
      */
     public function remove(int $productId, ?string $size = null): void
     {
-        $allItem = $this->getItem()->filter(function ($item) use ($productId, $size) {
+        $items = $this->getItem()->filter(function ($item) use ($productId, $size) {
             if ($item['product_id'] !== $productId) {
                 return true;
             }
@@ -82,7 +82,7 @@ class CartService
             return ($item['size'] ?? null) !== $size;
         })->values()->toArray();
 
-        Session::put(self::SESSION_KEY, $allItem);
+        Session::put(self::SESSION_KEY, $items);
     }
 
     /**
@@ -108,17 +108,17 @@ class CartService
      */
     public function getItemWithProduct(): Collection
     {
-        $allItem = $this->getItem();
+        $items = $this->getItem();
 
-        if ($allItem->isEmpty()) {
+        if ($items->isEmpty()) {
             return collect();
         }
 
-        $productIdList = $allItem->pluck('product_id');
-        $allProduct = Product::whereIn('id', $productIdList)->get()->keyBy('id');
+        $productIds = $items->pluck('product_id');
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-        return $allItem->map(function ($item) use ($allProduct) {
-            $product = $allProduct->get($item['product_id']);
+        return $items->map(function ($item) use ($products) {
+            $product = $products->get($item['product_id']);
 
             if ($product === null) {
                 return null;

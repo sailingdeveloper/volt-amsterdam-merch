@@ -119,10 +119,10 @@ class Product extends Model
             return;
         }
 
-        $allSize = $this->sizes;
-        if (isset($allSize[$size])) {
-            $allSize[$size] = max(0, $allSize[$size] - $quantity);
-            $this->sizes = $allSize;
+        $sizes = $this->sizes;
+        if (isset($sizes[$size])) {
+            $sizes[$size] = max(0, $sizes[$size] - $quantity);
+            $this->sizes = $sizes;
             $this->save();
         }
     }
@@ -134,16 +134,16 @@ class Product extends Model
 
     public function getAllImageAttribute(): array
     {
-        $allImage = [];
+        $images = [];
 
         if ($this->image) {
-            $allImage[] = $this->image;
+            $images[] = $this->image;
         }
 
         if (is_array($this->images)) {
-            $allImage = array_merge($allImage, $this->images);
+            $images = array_merge($images, $this->images);
         }
 
-        return $allImage;
+        return $images;
     }
 }

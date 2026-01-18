@@ -12,9 +12,9 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $allProduct = Product::where('active', true)->get();
+        $products = Product::where('active', true)->get();
 
-        return view('products.index', compact('allProduct'));
+        return view('products.index', compact('products'));
     }
 
     /**

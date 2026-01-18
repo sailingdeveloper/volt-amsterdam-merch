@@ -26,10 +26,10 @@ class CheckoutController extends Controller
                 ->with('error', __('shop.cart_empty'));
         }
 
-        $allItemWithProduct = $this->cartService->getItemWithProduct();
+        $itemsWithProduct = $this->cartService->getItemWithProduct();
 
         // Prepare line items for Stripe.
-        $allLineItem = $allItemWithProduct->map(function ($item) {
+        $lineItems = $itemsWithProduct->map(function ($item) {
             $name = $item['product']->localized_name;
             if ($item['size']) {
                 $name .= ' (' . $item['size'] . ')';
@@ -54,7 +54,7 @@ class CheckoutController extends Controller
         ]);
 
         // Create order items.
-        foreach ($allItemWithProduct as $item) {
+        foreach ($itemsWithProduct as $item) {
             $order->item()->create([
                 'product_id' => $item['product']->id,
                 'size' => $item['size'],
@@ -66,7 +66,7 @@ class CheckoutController extends Controller
         // Create Stripe Checkout session.
         // Note: We append the session_id placeholder manually because Laravel's route() helper URL-encodes it.
         $session = $this->stripeService->createCheckoutSession(
-            $allLineItem,
+            $lineItems,
             $this->cartService->getFee(),
             route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             route('checkout.cancel'),

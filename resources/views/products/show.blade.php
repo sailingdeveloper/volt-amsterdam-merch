@@ -34,13 +34,13 @@
                 {{-- Product Images --}}
                 <div class="space-y-4">
                     @php
-                        $allImage = $product->all_image;
+                        $images = $product->all_image;
                     @endphp
 
                     {{-- Main Image --}}
                     <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
-                        @if(count($allImage) > 0)
-                            <img src="{{ Storage::url($allImage[0]) }}"
+                        @if(count($images) > 0)
+                            <img src="{{ Storage::url($images[0]) }}"
                                  alt="{{ $product->localized_name }}"
                                  class="h-full w-full object-cover"
                                  id="main-product-image">
@@ -54,9 +54,9 @@
                     </div>
 
                     {{-- Thumbnail Gallery --}}
-                    @if(count($allImage) > 1)
+                    @if(count($images) > 1)
                         <div class="grid grid-cols-4 gap-3">
-                            @foreach($allImage as $index => $imagePath)
+                            @foreach($images as $index => $imagePath)
                                 <button type="button"
                                         onclick="document.getElementById('main-product-image').src = '{{ Storage::url($imagePath) }}'"
                                         class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 hover:border-volt-purple transition-colors {{ $index === 0 ? 'border-volt-purple' : 'border-transparent' }}">

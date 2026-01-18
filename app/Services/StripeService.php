@@ -20,20 +20,20 @@ class StripeService
     /**
      * Create a Stripe Checkout Session.
      *
-     * @param array<int, array{name: string, price: int, quantity: int}> $allItem
+     * @param array<int, array{name: string, price: int, quantity: int}> $items
      * @return Session|object
      */
     public function createCheckoutSession(
-        array $allItem,
+        array $items,
         int $feeCent,
         string $successUrl,
         string $cancelUrl,
         ?string $customerEmail = null
     ): object {
-        $allLineItem = [];
+        $lineItems = [];
 
-        foreach ($allItem as $item) {
-            $allLineItem[] = [
+        foreach ($items as $item) {
+            $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
@@ -47,7 +47,7 @@ class StripeService
 
         // Add processing fee as a line item.
         if ($feeCent > 0) {
-            $allLineItem[] = [
+            $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
@@ -61,7 +61,7 @@ class StripeService
 
         $sessionData = [
             'payment_method_types' => ['ideal'],
-            'line_items' => $allLineItem,
+            'line_items' => $lineItems,
             'mode' => 'payment',
             'success_url' => $successUrl,
             'cancel_url' => $cancelUrl,
@@ -157,8 +157,8 @@ class StripeService
         Mail::to($order->customer_email)->send(new OrderConfirmation($order));
 
         // Send to all admins.
-        $allAdminEmail = User::pluck('email')->toArray();
-        foreach ($allAdminEmail as $adminEmail) {
+        $adminEmails = User::pluck('email')->toArray();
+        foreach ($adminEmails as $adminEmail) {
             if ($adminEmail !== $order->customer_email) {
                 Mail::to($adminEmail)->send(new OrderConfirmation($order));
             }

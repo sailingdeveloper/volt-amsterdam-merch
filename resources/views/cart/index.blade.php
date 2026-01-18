@@ -23,7 +23,7 @@
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     {{-- Cart Items --}}
                     <ul class="divide-y divide-gray-200">
-                        @foreach($allItem as $item)
+                        @foreach($items as $item)
                             <li class="p-6">
                                 <div class="flex items-start space-x-4">
                                     {{-- Product Image --}}

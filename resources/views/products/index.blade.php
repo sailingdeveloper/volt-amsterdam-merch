@@ -20,7 +20,7 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-8">{{ __('shop.our_products') }}</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($allProduct as $product)
+                @foreach($products as $product)
                     <x-product-card :product="$product" />
                 @endforeach
             </div>
