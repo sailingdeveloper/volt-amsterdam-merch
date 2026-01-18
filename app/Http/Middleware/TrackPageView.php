@@ -81,12 +81,33 @@ class TrackPageView
     }
 
     /**
+     * AWS IP ranges (common health check sources).
+     */
+    protected const AWS_IP_PREFIXES = [
+        '3.',
+        '13.',
+        '18.',
+        '34.',
+        '35.',
+        '44.',
+        '50.',
+        '52.',
+        '54.',
+        '99.',
+    ];
+
+    /**
      * @return bool
      */
     private function shouldTrack(Request $request): bool
     {
         // Only track GET requests.
         if ($request->method() !== 'GET') {
+            return false;
+        }
+
+        // Skip cloud provider IPs (health checks).
+        if ($this->isCloudProviderIp($request->ip())) {
             return false;
         }
 
@@ -107,6 +128,20 @@ class TrackPageView
         }
 
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCloudProviderIp(string $ip): bool
+    {
+        foreach (self::AWS_IP_PREFIXES as $prefix) {
+            if (str_starts_with($ip, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
