@@ -28,6 +28,7 @@
         :noindex="$noindex"
     />
 
+    <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=ubuntu:400,500,700" rel="stylesheet" />
 
@@ -38,9 +39,8 @@
         <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between">
                 <div class="flex items-center">
-                    <a href="{{ route('products.index') }}" class="flex items-center space-x-2">
-                        <span class="text-2xl font-bold">Volt</span>
-                        <span class="text-volt-yellow">Amsterdam</span>
+                    <a href="{{ route('products.index') }}">
+                        <img src="/images/logo.png" alt="Volt Amsterdam" class="h-8">
                     </a>
                 </div>
 
@@ -111,8 +111,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
-                    <span class="text-xl font-bold">Volt</span>
-                    <span class="text-volt-yellow">Amsterdam</span>
+                    <img src="/images/logo.png" alt="Volt Amsterdam" class="h-6">
                 </div>
                 <div class="text-sm text-white/70">
                     &copy; {{ date('Y') }} Volt Amsterdam. {{ __('messages.all_rights_reserved') }}
