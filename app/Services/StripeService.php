@@ -63,6 +63,9 @@ class StripeService
             'success_url' => $successUrl,
             'cancel_url' => $cancelUrl,
             'locale' => app()->getLocale(),
+            'invoice_creation' => [
+                'enabled' => true,
+            ],
         ];
 
         if ($customerEmail !== null) {
