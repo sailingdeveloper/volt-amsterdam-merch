@@ -25,6 +25,7 @@ return [
 
     // Cart messages
     'added_to_cart' => 'Item added to your cart.',
+    'view_cart' => 'View cart',
     'cart_updated' => 'Cart updated.',
     'item_removed' => 'Item removed from your cart.',
 

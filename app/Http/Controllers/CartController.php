@@ -62,10 +62,13 @@ class CartController extends Controller
                 'success' => true,
                 'message' => __('shop.added_to_cart'),
                 'cart_count' => $this->cartService->getCount(),
+                'cart_url' => route('cart.index'),
+                'cart_link_text' => __('shop.view_cart'),
             ]);
         }
 
-        return back()->with('success', __('shop.added_to_cart'));
+        return back()->with('success', __('shop.added_to_cart'))
+            ->with('cart_link', true);
     }
 
     /**

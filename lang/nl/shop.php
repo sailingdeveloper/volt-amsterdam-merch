@@ -25,6 +25,7 @@ return [
 
     // Cart messages
     'added_to_cart' => 'Product toegevoegd aan je winkelwagen.',
+    'view_cart' => 'Bekijk winkelwagen',
     'cart_updated' => 'Winkelwagen bijgewerkt.',
     'item_removed' => 'Product verwijderd uit je winkelwagen.',
 
