@@ -15,28 +15,47 @@ class CartService
 
     protected ?Cart $cart = null;
 
+    protected bool $cartLoaded = false;
+
     /**
-     * Get or create the cart for the current session.
+     * Get the cart for the current session (without creating one).
      */
-    public function getCart(): Cart
+    public function getCart(): ?Cart
     {
-        if ($this->cart !== null) {
+        if ($this->cartLoaded) {
             return $this->cart;
         }
 
+        $this->cartLoaded = true;
+
         $cartId = Session::get(self::SESSION_CART_ID_KEY);
 
-        if ($cartId !== null) {
-            $this->cart = Cart::where('id', $cartId)
-                ->where('status', 'active')
-                ->first();
-
-            if ($this->cart !== null) {
-                return $this->cart;
-            }
+        if ($cartId === null) {
+            return null;
         }
 
-        // Create new cart and store ID in session.
+        $this->cart = Cart::where('id', $cartId)
+            ->where('status', 'active')
+            ->first();
+
+        if ($this->cart === null) {
+            Session::forget(self::SESSION_CART_ID_KEY);
+        }
+
+        return $this->cart;
+    }
+
+    /**
+     * Get or create the cart for the current session.
+     */
+    protected function getOrCreateCart(): Cart
+    {
+        $cart = $this->getCart();
+
+        if ($cart !== null) {
+            return $cart;
+        }
+
         $this->cart = Cart::create(['status' => 'active']);
         Session::put(self::SESSION_CART_ID_KEY, $this->cart->id);
 
@@ -52,6 +71,10 @@ class CartService
     {
         $cart = $this->getCart();
 
+        if ($cart === null) {
+            return collect();
+        }
+
         return $cart->items->map(function (CartItem $item) {
             return [
                 'product_id' => $item->product_id,
@@ -66,7 +89,7 @@ class CartService
      */
     public function add(int $productId, int $quantity = 1, ?string $size = null): void
     {
-        $cart = $this->getCart();
+        $cart = $this->getOrCreateCart();
 
         $item = $cart->items()
             ->where('product_id', $productId)
@@ -99,6 +122,10 @@ class CartService
 
         $cart = $this->getCart();
 
+        if ($cart === null) {
+            return;
+        }
+
         $cart->items()
             ->where('product_id', $productId)
             ->where('size', $size)
@@ -114,6 +141,10 @@ class CartService
     {
         $cart = $this->getCart();
 
+        if ($cart === null) {
+            return;
+        }
+
         $cart->items()
             ->where('product_id', $productId)
             ->where('size', $size)
@@ -128,6 +159,11 @@ class CartService
     public function clear(): void
     {
         $cart = $this->getCart();
+
+        if ($cart === null) {
+            return;
+        }
+
         $cart->items()->delete();
         $cart->touch();
     }
@@ -137,7 +173,13 @@ class CartService
      */
     public function getCount(): int
     {
-        return $this->getCart()->items()->sum('quantity');
+        $cart = $this->getCart();
+
+        if ($cart === null) {
+            return 0;
+        }
+
+        return $cart->items()->sum('quantity');
     }
 
     /**
@@ -148,6 +190,11 @@ class CartService
     public function getItemWithProduct(): Collection
     {
         $cart = $this->getCart();
+
+        if ($cart === null) {
+            return collect();
+        }
+
         $items = $cart->items()->with('product')->get();
 
         return $items->map(function (CartItem $item) {
@@ -230,6 +277,11 @@ class CartService
     public function markConverted(Order $order): void
     {
         $cart = $this->getCart();
+
+        if ($cart === null) {
+            return;
+        }
+
         $cart->update([
             'status' => 'converted',
             'order_id' => $order->id,
@@ -238,5 +290,6 @@ class CartService
         // Clear the cart reference so a new cart is created for future purchases.
         Session::forget(self::SESSION_CART_ID_KEY);
         $this->cart = null;
+        $this->cartLoaded = false;
     }
 }
