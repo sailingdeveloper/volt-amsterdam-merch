@@ -32,7 +32,29 @@ class OrderResource extends Resource
                             ->label('Name'),
                         Infolists\Components\TextEntry::make('customer_email')
                             ->label('Email'),
-                    ])->columns(2),
+                        Infolists\Components\TextEntry::make('customer_phone')
+                            ->label('Phone')
+                            ->placeholder('-'),
+                    ])->columns(3),
+
+                Infolists\Components\Section::make('Billing Address')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('billing_address_line1')
+                            ->label('Address Line 1')
+                            ->placeholder('-'),
+                        Infolists\Components\TextEntry::make('billing_address_line2')
+                            ->label('Address Line 2')
+                            ->placeholder('-'),
+                        Infolists\Components\TextEntry::make('billing_city')
+                            ->label('City')
+                            ->placeholder('-'),
+                        Infolists\Components\TextEntry::make('billing_postal_code')
+                            ->label('Postal Code')
+                            ->placeholder('-'),
+                        Infolists\Components\TextEntry::make('billing_country')
+                            ->label('Country')
+                            ->placeholder('-'),
+                    ])->columns(3),
 
                 Infolists\Components\Section::make('Order Details')
                     ->schema([

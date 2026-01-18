@@ -31,10 +31,17 @@ return [
 
     // Checkout
     'order_confirmed' => 'Order Confirmed!',
-    'order_confirmed_message' => 'Thank you for your order. You will receive a confirmation email shortly.',
+    'order_confirmed_message' => 'Thanks for your support! You will receive a confirmation email shortly with pickup details.',
     'order_cancelled' => 'Order Cancelled',
     'order_cancelled_message' => 'Your order was cancelled. Your cart items are still saved.',
     'return_to_cart' => 'Return to Cart',
     'order_details' => 'Order Details',
     'order_number' => 'Order number',
+
+    // Email
+    'order_confirmation_subject' => 'Order Confirmation #:number',
+    'name' => 'Name',
+    'items' => 'Items',
+    'email_footer' => 'With purple greetings, Fundraising Team Volt Amsterdam',
+    'email_pickup_info' => 'You can collect your order at one of the pickup locations in the city. We will contact you with the details.',
 ];

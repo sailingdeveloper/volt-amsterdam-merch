@@ -6,10 +6,10 @@ return [
     'all_rights_reserved' => 'All rights reserved.',
 
     // Hero
-    'hero_title' => 'Volt Amsterdam Merchandise',
-    'hero_subtitle' => 'Show your support for progressive European politics with our official merchandise.',
+    'hero_title' => 'Volt Amsterdam Merch',
+    'hero_subtitle' => 'Support Volt on the road to the elections and get something nice (or tasty) in return! Think beer, clothing, and an iconic purple bike bell that should honestly be legally required in Amsterdam.',
 
     // About
-    'about_title' => 'About Volt Amsterdam',
-    'about_text' => 'Volt is a pan-European progressive movement and political party. We believe in a united, democratic Europe that works for all citizens. By purchasing our merchandise, you support our local chapter in Amsterdam and help spread our message of European unity and progress.',
+    'about_title' => 'Wear the Future',
+    'about_text' => 'The campaign has officially started, and of course we\'re doing it the Volt way. With style, energy, and a bit of purple fun. From now on, you can order campaign merchandise and donate at the same time. Not standard Volt merchandise, but exclusive to this campaign. Limited edition. Extra hip.',
 ];

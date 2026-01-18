@@ -45,6 +45,7 @@ class CheckoutController extends Controller
             'fee' => $this->cartService->getFee(),
             'total' => $this->cartService->getTotal(),
             'status' => 'pending',
+            'locale' => app()->getLocale(),
         ]);
 
         // Create order items.

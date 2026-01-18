@@ -8,7 +8,8 @@
             </div>
 
             <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ __('shop.order_confirmed') }}</h1>
-            <p class="text-lg text-gray-600 mb-8">{{ __('shop.order_confirmed_message') }}</p>
+            <p class="text-lg text-gray-600 mb-4">{{ __('shop.order_confirmed_message') }}</p>
+            <p class="text-volt-purple mb-8">{{ __('shop.email_pickup_info') }}</p>
 
             <div class="bg-white rounded-xl shadow-sm p-6 text-left mb-8">
                 <h2 class="font-semibold text-gray-900 mb-4">{{ __('shop.order_details') }}</h2>

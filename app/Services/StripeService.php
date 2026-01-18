@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Mail\OrderConfirmation;
 use App\Models\Order;
+use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -66,6 +68,10 @@ class StripeService
             'invoice_creation' => [
                 'enabled' => true,
             ],
+            'billing_address_collection' => 'required',
+            'phone_number_collection' => [
+                'enabled' => true,
+            ],
         ];
 
         if ($customerEmail !== null) {
@@ -107,12 +113,35 @@ class StripeService
         $order = Order::where('stripe_session_id', $session->id)->first();
 
         if ($order !== null) {
+            $customerDetails = $session->customer_details;
+            $address = $customerDetails?->address;
+
             $order->update([
                 'status' => 'paid',
                 'stripe_payment_intent_id' => $session->payment_intent ?? null,
-                'customer_email' => $session->customer_details?->email ?? $order->customer_email,
-                'customer_name' => $session->customer_details?->name ?? $order->customer_name,
+                'customer_email' => $customerDetails?->email ?? $order->customer_email,
+                'customer_name' => $customerDetails?->name ?? $order->customer_name,
+                'customer_phone' => $customerDetails?->phone ?? null,
+                'billing_address_line1' => $address?->line1 ?? null,
+                'billing_address_line2' => $address?->line2 ?? null,
+                'billing_city' => $address?->city ?? null,
+                'billing_postal_code' => $address?->postal_code ?? null,
+                'billing_country' => $address?->country ?? null,
             ]);
+
+            $this->sendOrderConfirmationEmail($order);
         }
+    }
+
+    /**
+     * Send order confirmation email to the customer.
+     */
+    protected function sendOrderConfirmationEmail(Order $order): void
+    {
+        if ($order->customer_email === null) {
+            return;
+        }
+
+        Mail::to($order->customer_email)->send(new OrderConfirmation($order));
     }
 }

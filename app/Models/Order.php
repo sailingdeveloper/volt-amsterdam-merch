@@ -12,10 +12,17 @@ class Order extends Model
         'stripe_payment_intent_id',
         'customer_email',
         'customer_name',
+        'customer_phone',
+        'billing_address_line1',
+        'billing_address_line2',
+        'billing_city',
+        'billing_postal_code',
+        'billing_country',
         'subtotal',
         'fee',
         'total',
         'status',
+        'locale',
     ];
 
     protected $casts = [

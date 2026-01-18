@@ -31,10 +31,17 @@ return [
 
     // Checkout
     'order_confirmed' => 'Bestelling Bevestigd!',
-    'order_confirmed_message' => 'Bedankt voor je bestelling. Je ontvangt binnenkort een bevestigingsmail.',
+    'order_confirmed_message' => 'Dank voor je steun! Je ontvangt binnenkort een bevestigingsmail met ophaalinformatie.',
     'order_cancelled' => 'Bestelling Geannuleerd',
     'order_cancelled_message' => 'Je bestelling is geannuleerd. Je winkelwagen is nog steeds opgeslagen.',
     'return_to_cart' => 'Terug naar Winkelwagen',
     'order_details' => 'Bestelgegevens',
     'order_number' => 'Bestelnummer',
+
+    // Email
+    'order_confirmation_subject' => 'Bevestiging Bestelling #:number',
+    'name' => 'Naam',
+    'items' => 'Artikelen',
+    'email_footer' => 'Met paarse groet, Fundraising Team Volt Amsterdam',
+    'email_pickup_info' => 'Je haalt je bestelling zelf op, op één van de ophaallocaties in de stad. We nemen contact met je op met de details.',
 ];
