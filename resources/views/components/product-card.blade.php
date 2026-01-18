@@ -24,25 +24,25 @@
             @endif
         </div>
 
-        <div class="p-4">
-            <h3 class="font-semibold text-gray-900 group-hover:text-volt-purple transition-colors">
+        <div class="p-3 sm:p-4">
+            <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-volt-purple transition-colors line-clamp-2">
                 {{ $product->localized_name }}
             </h3>
-            <p class="mt-1 text-lg font-bold text-volt-purple">
+            <p class="mt-1 text-base sm:text-lg font-bold text-volt-purple">
                 &euro;{{ $product->formatted_price }}
             </p>
         </div>
     </a>
 
-    <div class="px-4 pb-4">
+    <div class="px-3 pb-3 sm:px-4 sm:pb-4">
         @if($product->isOrderable())
             <form action="{{ route('cart.add') }}" method="POST" data-add-to-cart>
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 @if($product->hasSizes())
-                    <div class="flex gap-2">
+                    <div class="flex flex-col sm:flex-row gap-2">
                         <select name="size" required
-                                class="w-24 bg-white text-gray-700 font-medium py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-volt-purple focus:border-volt-purple cursor-pointer">
+                                class="w-full sm:w-20 bg-white text-gray-700 text-sm font-medium py-2 px-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-volt-purple focus:border-volt-purple cursor-pointer">
                             <option value="">{{ __('shop.size') }}</option>
                             @foreach($product->ordered_sizes as $size => $stock)
                                 @if($stock > 0)
@@ -51,20 +51,20 @@
                             @endforeach
                         </select>
                         <button type="submit"
-                                class="flex-1 bg-volt-purple hover:bg-volt-purple-dark text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                                class="flex-1 bg-volt-purple hover:bg-volt-purple-dark text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors whitespace-nowrap">
                             {{ __('shop.add_to_cart') }}
                         </button>
                     </div>
                 @else
                     <button type="submit"
-                            class="w-full bg-volt-purple hover:bg-volt-purple-dark text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                            class="w-full bg-volt-purple hover:bg-volt-purple-dark text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors">
                         {{ __('shop.add_to_cart') }}
                     </button>
                 @endif
             </form>
         @elseif($product->orderable === false)
             <a href="{{ route('products.show', $product->slug) }}"
-               class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors">
+               class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 px-3 rounded-lg transition-colors">
                 {{ __('shop.view') }}
             </a>
         @endif
