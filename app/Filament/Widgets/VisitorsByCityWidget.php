@@ -42,7 +42,7 @@ class VisitorsByCityWidget extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('city')
                     ->label('City')
-                    ->formatStateUsing(fn (string $state, Model $record): string => $state . ', ' . $this->getCountryCode($record->country)),
+                    ->formatStateUsing(fn (string $state, Model $record): string => $state . ', ' . ($record->country ?? '')),
                 Tables\Columns\TextColumn::make('views')
                     ->label('Views')
                     ->numeric(),
@@ -62,43 +62,4 @@ class VisitorsByCityWidget extends BaseWidget
         return $record->city . '_' . $record->country;
     }
 
-    /**
-     * @return string
-     */
-    private function getCountryCode(string $country): string
-    {
-        $codes = [
-            'Netherlands' => 'NL',
-            'Belgium' => 'BE',
-            'Germany' => 'DE',
-            'France' => 'FR',
-            'United Kingdom' => 'UK',
-            'United States' => 'US',
-            'Spain' => 'ES',
-            'Italy' => 'IT',
-            'Portugal' => 'PT',
-            'Austria' => 'AT',
-            'Switzerland' => 'CH',
-            'Poland' => 'PL',
-            'Sweden' => 'SE',
-            'Norway' => 'NO',
-            'Denmark' => 'DK',
-            'Finland' => 'FI',
-            'Ireland' => 'IE',
-            'Canada' => 'CA',
-            'Australia' => 'AU',
-            'Japan' => 'JP',
-            'China' => 'CN',
-            'India' => 'IN',
-            'Brazil' => 'BR',
-            'Mexico' => 'MX',
-        ];
-
-        if (isset($codes[$country])) {
-            return $codes[$country];
-        }
-
-        // Fallback: first two letters uppercase.
-        return strtoupper(substr($country, 0, 2));
-    }
 }

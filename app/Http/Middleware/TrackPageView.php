@@ -237,11 +237,11 @@ class TrackPageView
     private function fetchGeoLocation(string $ip): array
     {
         try {
-            $response = Http::timeout(2)->get("http://ip-api.com/json/{$ip}?fields=status,country,city");
+            $response = Http::timeout(2)->get("http://ip-api.com/json/{$ip}?fields=status,countryCode,city");
 
             if ($response->successful() && $response->json('status') === 'success') {
                 return [
-                    'country' => $response->json('country'),
+                    'country' => $response->json('countryCode'),
                     'city' => $response->json('city'),
                 ];
             }
