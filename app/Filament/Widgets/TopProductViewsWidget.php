@@ -31,7 +31,7 @@ class TopProductViewsWidget extends BaseWidget
                     ->select('product_id', DB::raw('COUNT(*) as views'), DB::raw('COUNT(DISTINCT session_id) as unique_visitors'))
                     ->whereNotNull('product_id')
                     ->groupBy('product_id')
-                    ->orderByDesc('views')
+                    ->orderByDesc('unique_visitors')
                     ->limit(10)
             )
             ->columns([

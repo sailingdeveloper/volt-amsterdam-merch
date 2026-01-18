@@ -30,7 +30,7 @@ class TopPagesWidget extends BaseWidget
                 PageView::query()
                     ->select('path', DB::raw('COUNT(*) as views'), DB::raw('COUNT(DISTINCT session_id) as unique_visitors'))
                     ->groupBy('path')
-                    ->orderByDesc('views')
+                    ->orderByDesc('unique_visitors')
                     ->limit(10)
             )
             ->columns([
