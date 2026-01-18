@@ -58,8 +58,9 @@ Om deze fietsbel te bemachtigen, stuur je een mailtje naar Eerke (eerke.steller@
 
 Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen.",
                 'price' => 2000,
-                'stock' => 0,
+                'stock' => 100,
                 'active' => true,
+                'orderable' => false,
             ],
             [
                 'name' => 'Volt AMS Hoodie (White)',

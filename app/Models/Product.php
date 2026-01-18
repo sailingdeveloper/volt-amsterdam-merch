@@ -19,12 +19,14 @@ class Product extends Model
         'image',
         'stock',
         'active',
+        'orderable',
     ];
 
     protected $casts = [
         'price' => 'integer',
         'stock' => 'integer',
         'active' => 'boolean',
+        'orderable' => 'boolean',
     ];
 
     /**
@@ -61,5 +63,10 @@ class Product extends Model
     public function isInStock(): bool
     {
         return $this->stock > 0;
+    }
+
+    public function isOrderable(): bool
+    {
+        return $this->orderable && $this->stock > 0;
     }
 }

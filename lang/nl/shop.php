@@ -6,6 +6,8 @@ return [
     'add_to_cart' => 'In Winkelwagen',
     'in_stock' => 'Op voorraad',
     'out_of_stock' => 'Uitverkocht',
+    'not_orderable_online' => 'Niet online te bestellen',
+    'view' => 'Bekijken',
     'quantity' => 'Aantal',
     'each' => 'per stuk',
 

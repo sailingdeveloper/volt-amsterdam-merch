@@ -34,8 +34,8 @@
         </div>
     </a>
 
-    @if($product->isInStock())
-        <div class="px-4 pb-4">
+    <div class="px-4 pb-4">
+        @if($product->isOrderable())
             <form action="{{ route('cart.add') }}" method="POST" data-add-to-cart>
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -44,6 +44,11 @@
                     {{ __('shop.add_to_cart') }}
                 </button>
             </form>
-        </div>
-    @endif
+        @elseif($product->orderable === false)
+            <a href="{{ route('products.show', $product->slug) }}"
+               class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors">
+                {{ __('shop.view') }}
+            </a>
+        @endif
+    </div>
 </div>

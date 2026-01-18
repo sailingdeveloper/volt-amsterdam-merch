@@ -6,6 +6,8 @@ return [
     'add_to_cart' => 'Add to Cart',
     'in_stock' => 'In stock',
     'out_of_stock' => 'Out of stock',
+    'not_orderable_online' => 'Not available for online ordering',
+    'view' => 'View',
     'quantity' => 'Quantity',
     'each' => 'each',
 

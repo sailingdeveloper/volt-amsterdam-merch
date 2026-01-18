@@ -37,12 +37,28 @@ class ProductResource extends Resource
 
                 Forms\Components\Section::make('Description')
                     ->schema([
-                        Forms\Components\Textarea::make('description')
+                        Forms\Components\RichEditor::make('description')
                             ->required()
-                            ->rows(4),
-                        Forms\Components\Textarea::make('description_nl')
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'link',
+                                'bulletList',
+                                'orderedList',
+                                'redo',
+                                'undo',
+                            ]),
+                        Forms\Components\RichEditor::make('description_nl')
                             ->label('Description (Dutch)')
-                            ->rows(4),
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'link',
+                                'bulletList',
+                                'orderedList',
+                                'redo',
+                                'undo',
+                            ]),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Pricing & Stock')

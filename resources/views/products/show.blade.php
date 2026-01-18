@@ -44,11 +44,11 @@
                         &euro;{{ $product->formatted_price }}
                     </p>
 
-                    <div class="prose prose-gray mb-8">
-                        <p>{{ $product->localized_description }}</p>
+                    <div class="prose prose-gray max-w-none mb-8">
+                        {!! $product->localized_description !!}
                     </div>
 
-                    @if($product->isInStock())
+                    @if($product->isOrderable())
                         <form action="{{ route('cart.add') }}" method="POST" class="space-y-4" data-add-to-cart>
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -77,6 +77,10 @@
                             </svg>
                             {{ __('shop.in_stock') }}
                         </p>
+                    @elseif(!$product->orderable)
+                        <div class="bg-volt-purple/10 text-volt-purple px-4 py-3 rounded-lg">
+                            {{ __('shop.not_orderable_online') }}
+                        </div>
                     @else
                         <div class="bg-red-50 text-red-700 px-4 py-3 rounded-lg">
                             {{ __('shop.out_of_stock') }}
