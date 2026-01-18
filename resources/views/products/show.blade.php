@@ -96,7 +96,7 @@
                                     <select name="size" id="size" required
                                             class="block w-full sm:w-48 rounded-lg border-gray-300 shadow-sm focus:border-volt-purple focus:ring-volt-purple">
                                         <option value="">{{ __('shop.select_size') }}</option>
-                                        @foreach($product->sizes as $size => $stock)
+                                        @foreach($product->ordered_sizes as $size => $stock)
                                             @if($stock > 0)
                                                 <option value="{{ $size }}">{{ $size }}</option>
                                             @else

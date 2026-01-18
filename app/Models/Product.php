@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     use HasFactory;
+
+    /**
+     * Standard size ordering from smallest to largest.
+     */
+    public const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+
     protected $fillable = [
         'name',
         'name_nl',
@@ -67,6 +73,36 @@ class Product extends Model
     public function hasSizes(): bool
     {
         return is_array($this->sizes) && count($this->sizes) > 0;
+    }
+
+    /**
+     * Get sizes sorted in logical order (XS, S, M, L, XL, XXL, XXXL).
+     *
+     * @return array<string, int>
+     */
+    public function getOrderedSizesAttribute(): array
+    {
+        if ($this->hasSizes() === false) {
+            return [];
+        }
+
+        $sizes = $this->sizes;
+        $ordered = [];
+
+        // First add sizes in standard order
+        foreach (self::SIZE_ORDER as $size) {
+            if (isset($sizes[$size])) {
+                $ordered[$size] = $sizes[$size];
+                unset($sizes[$size]);
+            }
+        }
+
+        // Then add any custom sizes that weren't in the standard order
+        foreach ($sizes as $size => $stock) {
+            $ordered[$size] = $stock;
+        }
+
+        return $ordered;
     }
 
     public function getAvailableSizeAttribute(): array
