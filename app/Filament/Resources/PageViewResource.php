@@ -56,6 +56,10 @@ class PageViewResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('ip_address')
                     ->label('IP'),
+                Tables\Columns\TextColumn::make('user_agent')
+                    ->label('User Agent')
+                    ->limit(40)
+                    ->tooltip(fn (?string $state): ?string => $state),
                 Tables\Columns\TextColumn::make('session_id')
                     ->label('Session')
                     ->limit(12)

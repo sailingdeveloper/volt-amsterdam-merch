@@ -138,6 +138,7 @@ class TrackPageView
             'session_id' => $request->session()->getId(),
             'referrer' => $this->parseReferrer($request->header('referer')),
             'ip_address' => $ip,
+            'user_agent' => $request->userAgent(),
             'country' => $geo['country'] ?? null,
             'city' => $geo['city'] ?? null,
             'product_id' => $this->resolveProductId($request),

@@ -20,6 +20,7 @@ class PageView extends Model
         'session_id',
         'referrer',
         'ip_address',
+        'user_agent',
         'country',
         'city',
         'product_id',
