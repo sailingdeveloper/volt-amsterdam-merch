@@ -57,10 +57,11 @@ class CheckoutController extends Controller
         }
 
         // Create Stripe Checkout session.
+        // Note: We append the session_id placeholder manually because Laravel's route() helper URL-encodes it.
         $session = $this->stripeService->createCheckoutSession(
             $allLineItem,
             $this->cartService->getFee(),
-            route('checkout.success', ['session_id' => '{CHECKOUT_SESSION_ID}']),
+            route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
             route('checkout.cancel'),
         );
 
