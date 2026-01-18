@@ -1,4 +1,16 @@
-<x-layouts.app :title="$product->localized_name . ' | Volt Amsterdam'">
+@php
+    $productImage = count($product->all_image) > 0 ? Storage::url($product->all_image[0]) : null;
+    $productDescription = Str::limit(strip_tags($product->localized_description), 160);
+@endphp
+
+<x-layouts.app
+    :title="$product->localized_name"
+    :description="$productDescription . ' - €' . $product->formatted_price"
+    :image="$productImage"
+    :url="route('products.show', $product->slug)"
+    type="product"
+    :product="$product"
+>
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {{-- Breadcrumb --}}

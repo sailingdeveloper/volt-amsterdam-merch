@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class ProductSeeder extends Seeder
 {
@@ -40,6 +41,8 @@ Er zijn hoodies, long-sleeves en sjalen. Niet alleen in het paars, want dat is n
      */
     public function run(): void
     {
+        // Copy seed images to storage.
+        $this->copyImageToStorage();
         $allProduct = [
             // Beer.
             [
@@ -64,6 +67,7 @@ Dus:
 ...enzovoort 🍻",
                 'price' => 3000,
                 'stock' => 100,
+                'image' => 'products/voltreffer.jpg',
                 'active' => true,
             ],
             // Bike bell.
@@ -89,6 +93,7 @@ Om deze fietsbel te bemachtigen, stuur je een mailtje naar Eerke (eerke.steller@
 Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen.",
                 'price' => 2000,
                 'stock' => 100,
+                'image' => 'products/bike-bell.jpg',
                 'active' => true,
                 'orderable' => false,
             ],
@@ -102,6 +107,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 4900,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
+                'image' => 'products/hoodie-purple-front.jpg',
+                'images' => ['products/hoodie-purple-back.jpg'],
                 'active' => true,
             ],
             // Hoodie White.
@@ -114,6 +121,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 4900,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
+                'image' => 'products/hoodie-white-front.jpg',
+                'images' => ['products/hoodie-white-back.jpg'],
                 'active' => true,
             ],
             // Long-sleeve shirt Purple.
@@ -126,6 +135,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 2800,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
+                'image' => 'products/longsleeve-purple-front.jpg',
+                'images' => ['products/longsleeve-purple-back.jpg'],
                 'active' => true,
             ],
             // Long-sleeve shirt White.
@@ -138,6 +149,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 2800,
                 'stock' => null,
                 'sizes' => self::SIZE_CLOTHING,
+                'image' => 'products/longsleeve-white-front.jpg',
+                'images' => ['products/longsleeve-white-back.jpg'],
                 'active' => true,
             ],
             // Scarf White.
@@ -150,12 +163,39 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'price' => 2500,
                 'stock' => null,
                 'sizes' => self::SIZE_ONE,
+                'image' => 'products/scarf-white.png',
                 'active' => true,
             ],
         ];
 
         foreach ($allProduct as $product) {
             Product::create($product);
+        }
+    }
+
+    /**
+     * Copy seed images from database/seeders/images to storage.
+     */
+    protected function copyImageToStorage(): void
+    {
+        $seedImagePath = database_path('seeders/images');
+
+        if (is_dir($seedImagePath) === false) {
+            return;
+        }
+
+        // Ensure the products directory exists in storage.
+        Storage::disk('public')->makeDirectory('products');
+
+        // Copy all images from seed directory to storage.
+        $allFile = glob($seedImagePath . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+        foreach ($allFile as $file) {
+            $filename = basename($file);
+            $destination = 'products/' . $filename;
+
+            if (Storage::disk('public')->exists($destination) === false) {
+                Storage::disk('public')->put($destination, file_get_contents($file));
+            }
         }
     }
 }

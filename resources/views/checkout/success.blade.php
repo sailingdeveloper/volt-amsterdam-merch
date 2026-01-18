@@ -1,4 +1,7 @@
-<x-layouts.app :title="__('shop.order_confirmed') . ' | Volt Amsterdam'">
+<x-layouts.app
+    :title="__('shop.order_confirmed')"
+    :noindex="true"
+>
     <div class="py-16">
         <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 text-center">
             <div class="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-green-100 mb-6">

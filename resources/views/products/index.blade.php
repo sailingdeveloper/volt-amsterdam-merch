@@ -1,4 +1,7 @@
-<x-layouts.app :title="__('messages.welcome') . ' | Volt Amsterdam'">
+<x-layouts.app
+    :description="__('seo.site_description')"
+    type="website"
+>
     {{-- Hero Section --}}
     <section class="bg-gradient-to-br from-volt-purple to-volt-purple-dark text-white py-16">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">

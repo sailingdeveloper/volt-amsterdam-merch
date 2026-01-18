@@ -1,4 +1,7 @@
-<x-layouts.app :title="__('shop.cart') . ' | Volt Amsterdam'">
+<x-layouts.app
+    :title="__('shop.cart')"
+    :noindex="true"
+>
     @if($isEmpty)
         <div class="flex-1 flex items-center justify-center px-4">
             <div class="text-center">

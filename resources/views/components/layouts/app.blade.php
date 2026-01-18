@@ -1,3 +1,13 @@
+@props([
+    'title' => null,
+    'description' => null,
+    'image' => null,
+    'url' => null,
+    'type' => 'website',
+    'product' => null,
+    'noindex' => false,
+])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -5,7 +15,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Volt Amsterdam Merch' }}</title>
+    <title>{{ $title ? $title . ' | Volt Amsterdam Merch' : 'Volt Amsterdam Merch - Official Campaign Store' }}</title>
+
+    {{-- SEO Meta Tags --}}
+    <x-seo-meta
+        :title="$title"
+        :description="$description"
+        :image="$image"
+        :url="$url"
+        :type="$type"
+        :product="$product"
+        :noindex="$noindex"
+    />
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=ubuntu:400,500,700" rel="stylesheet" />
