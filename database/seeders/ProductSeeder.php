@@ -97,20 +97,6 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'active' => true,
                 'orderable' => false,
             ],
-            // Hoodie Purple.
-            [
-                'name' => 'Hoodie - Purple',
-                'name_nl' => 'Hoodie - Paars',
-                'slug' => 'hoodie-paars',
-                'description' => self::DESCRIPTION_CLOTHING_EN,
-                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
-                'price' => 4900,
-                'stock' => null,
-                'sizes' => self::SIZE_CLOTHING,
-                'image' => 'products/hoodie-purple-front.png',
-                'images' => ['products/hoodie-purple-back.png'],
-                'active' => true,
-            ],
             // Hoodie White.
             [
                 'name' => 'Hoodie - White',
@@ -123,6 +109,20 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'sizes' => self::SIZE_CLOTHING,
                 'image' => 'products/hoodie-white-front.jpg',
                 'images' => ['products/hoodie-white-back.png'],
+                'active' => true,
+            ],
+            // Hoodie Purple.
+            [
+                'name' => 'Hoodie - Purple',
+                'name_nl' => 'Hoodie - Paars',
+                'slug' => 'hoodie-paars',
+                'description' => self::DESCRIPTION_CLOTHING_EN,
+                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
+                'price' => 4900,
+                'stock' => null,
+                'sizes' => self::SIZE_CLOTHING,
+                'image' => 'products/hoodie-purple-front.png',
+                'images' => ['products/hoodie-purple-back.png'],
                 'active' => true,
             ],
             // Long-sleeve shirt Purple.
@@ -162,7 +162,6 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'description_nl' => self::DESCRIPTION_CLOTHING_NL,
                 'price' => 2500,
                 'stock' => null,
-                'sizes' => self::SIZE_ONE,
                 'image' => 'products/scarf-white.png',
                 'active' => true,
             ],
