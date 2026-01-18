@@ -52,8 +52,7 @@ class PageViewResource extends Resource
                     ->label('Referrer')
                     ->limit(30)
                     ->tooltip(fn (?string $state): ?string => $state)
-                    ->placeholder('-')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('ip_address')
                     ->label('IP'),
                 Tables\Columns\TextColumn::make('user_agent')
