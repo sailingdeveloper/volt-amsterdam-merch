@@ -22,13 +22,13 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $orderPaidTotal = Order::where('status', 'paid')->count();
-        $revenueTotalCent = Order::where('status', 'paid')->sum('total');
+        $revenueTotalCent = Order::where('status', 'paid')->sum('subtotal');
         $orderTodayTotal = Order::where('status', 'paid')
             ->whereDate('created_at', today())
             ->count();
         $revenueTodayCent = Order::where('status', 'paid')
             ->whereDate('created_at', today())
-            ->sum('total');
+            ->sum('subtotal');
 
         return [
             Stat::make('Total Orders', $orderPaidTotal)
