@@ -22,7 +22,7 @@
                 {{-- Product Image --}}
                 <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
                     @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}"
+                        <img src="{{ Storage::url($product->image) }}"
                              alt="{{ $product->localized_name }}"
                              class="h-full w-full object-cover">
                     @else

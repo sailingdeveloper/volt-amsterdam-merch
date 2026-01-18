@@ -26,7 +26,7 @@
                                     {{-- Product Image --}}
                                     <div class="h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
                                         @if($item['product']->image)
-                                            <img src="{{ asset('storage/' . $item['product']->image) }}"
+                                            <img src="{{ Storage::url($item['product']->image) }}"
                                                  alt="{{ $item['product']->localized_name }}"
                                                  class="h-full w-full object-cover">
                                         @else
