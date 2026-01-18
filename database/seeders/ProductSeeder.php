@@ -99,8 +99,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
             ],
             // Hoodie Purple.
             [
-                'name' => 'Hoodie (Purple)',
-                'name_nl' => 'Hoodie (Paars)',
+                'name' => 'Hoodie - Purple',
+                'name_nl' => 'Hoodie - Paars',
                 'slug' => 'hoodie-paars',
                 'description' => self::DESCRIPTION_CLOTHING_EN,
                 'description_nl' => self::DESCRIPTION_CLOTHING_NL,
@@ -113,8 +113,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
             ],
             // Hoodie White.
             [
-                'name' => 'Hoodie (White)',
-                'name_nl' => 'Hoodie (Wit)',
+                'name' => 'Hoodie - White',
+                'name_nl' => 'Hoodie - Wit',
                 'slug' => 'hoodie-wit',
                 'description' => self::DESCRIPTION_CLOTHING_EN,
                 'description_nl' => self::DESCRIPTION_CLOTHING_NL,
@@ -127,8 +127,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
             ],
             // Long-sleeve shirt Purple.
             [
-                'name' => 'Long-Sleeve Shirt (Purple)',
-                'name_nl' => 'Long-Sleeve Shirt (Paars)',
+                'name' => 'Long-Sleeve Shirt - Purple',
+                'name_nl' => 'Long-Sleeve Shirt - Paars',
                 'slug' => 'long-sleeve-paars',
                 'description' => self::DESCRIPTION_CLOTHING_EN,
                 'description_nl' => self::DESCRIPTION_CLOTHING_NL,
@@ -141,8 +141,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
             ],
             // Long-sleeve shirt White.
             [
-                'name' => 'Long-Sleeve Shirt (White)',
-                'name_nl' => 'Long-Sleeve Shirt (Wit)',
+                'name' => 'Long-Sleeve Shirt - White',
+                'name_nl' => 'Long-Sleeve Shirt - Wit',
                 'slug' => 'long-sleeve-wit',
                 'description' => self::DESCRIPTION_CLOTHING_EN,
                 'description_nl' => self::DESCRIPTION_CLOTHING_NL,
@@ -155,8 +155,8 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
             ],
             // Scarf White.
             [
-                'name' => 'Scarf (White)',
-                'name_nl' => 'Sjaal (Wit)',
+                'name' => 'Scarf - White',
+                'name_nl' => 'Sjaal - Wit',
                 'slug' => 'sjaal-wit',
                 'description' => self::DESCRIPTION_CLOTHING_EN,
                 'description_nl' => self::DESCRIPTION_CLOTHING_NL,

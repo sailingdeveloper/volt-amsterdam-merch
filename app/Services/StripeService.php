@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\AdminOrderNotification;
 use App\Mail\OrderConfirmation;
 use App\Models\Order;
 use App\Models\User;
@@ -145,23 +146,19 @@ class StripeService
     }
 
     /**
-     * Send order confirmation email to the customer and all admins.
+     * Send order confirmation email to the customer and notification to all admins.
      */
     protected function sendOrderConfirmationEmail(Order $order): void
     {
-        if ($order->customer_email === null) {
-            return;
+        // Send confirmation to customer.
+        if ($order->customer_email !== null) {
+            Mail::to($order->customer_email)->send(new OrderConfirmation($order));
         }
 
-        // Send to customer.
-        Mail::to($order->customer_email)->send(new OrderConfirmation($order));
-
-        // Send to all admins.
+        // Send notification to all admins.
         $adminEmails = User::pluck('email')->toArray();
         foreach ($adminEmails as $adminEmail) {
-            if ($adminEmail !== $order->customer_email) {
-                Mail::to($adminEmail)->send(new OrderConfirmation($order));
-            }
+            Mail::to($adminEmail)->send(new AdminOrderNotification($order));
         }
     }
 }

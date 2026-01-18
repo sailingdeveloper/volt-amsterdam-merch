@@ -47,4 +47,15 @@ return [
     'items' => 'Artikelen',
     'email_footer' => 'Met paarse groet, Fundraising Team Volt Amsterdam',
     'email_pickup_info' => 'Je haalt je bestelling zelf op, op één van de ophaallocaties in de stad. We nemen contact met je op met de details.',
+
+    // Admin Email
+    'admin_order_subject' => 'Nieuwe Bestelling #:number Ontvangen',
+    'admin_new_order' => 'Nieuwe Bestelling Ontvangen',
+    'admin_order_message' => 'Er is een nieuwe bestelling #:number geplaatst en betaald.',
+    'admin_customer_info' => 'Klantgegevens',
+    'admin_email' => 'E-mail',
+    'admin_phone' => 'Telefoon',
+    'admin_address' => 'Adres',
+    'admin_order_date' => 'Besteldatum',
+    'admin_email_footer' => 'Dit is een automatische melding van de Volt Amsterdam webshop.',
 ];

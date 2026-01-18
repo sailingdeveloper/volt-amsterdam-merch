@@ -47,4 +47,15 @@ return [
     'items' => 'Items',
     'email_footer' => 'With purple greetings, Fundraising Team Volt Amsterdam',
     'email_pickup_info' => 'You can collect your order at one of the pickup locations in the city. We will contact you with the details.',
+
+    // Admin Email
+    'admin_order_subject' => 'New Order #:number Received',
+    'admin_new_order' => 'New Order Received',
+    'admin_order_message' => 'A new order #:number has been placed and paid.',
+    'admin_customer_info' => 'Customer Information',
+    'admin_email' => 'Email',
+    'admin_phone' => 'Phone',
+    'admin_address' => 'Address',
+    'admin_order_date' => 'Order date',
+    'admin_email_footer' => 'This is an automated notification from the Volt Amsterdam webshop.',
 ];
