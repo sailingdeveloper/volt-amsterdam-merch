@@ -55,8 +55,7 @@ class PageViewResource extends Resource
                     ->placeholder('-')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('ip_address')
-                    ->label('IP')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('IP'),
                 Tables\Columns\TextColumn::make('session_id')
                     ->label('Session')
                     ->limit(12)
