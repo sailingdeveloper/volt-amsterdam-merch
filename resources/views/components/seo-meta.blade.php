@@ -11,8 +11,8 @@
 @php
     $siteName = 'Volt Amsterdam Merch';
     $defaultDescription = __('seo.site_description');
-    // Use SVG as fallback (replace with proper 1200x630 PNG for best social media support)
-    $defaultImage = asset('images/og-default.svg');
+    // OG image should be 1200x630 PNG/JPG for best social media support
+    $defaultImage = asset('images/og-default.png');
 
     // Build the final values - title without suffix for OG (page title already has suffix)
     $metaTitle = $title ? "{$title} | {$siteName}" : $siteName;
@@ -124,7 +124,7 @@
         '@type' => 'Organization',
         'name' => 'Volt Amsterdam',
         'url' => config('app.url'),
-        'logo' => asset('images/og-default.svg'),
+        'logo' => asset('images/og-default.png'),
         'description' => $defaultDescription,
     ];
     $siteJsonLd = [
