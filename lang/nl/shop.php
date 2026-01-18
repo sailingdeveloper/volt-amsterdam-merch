@@ -2,8 +2,8 @@
 
 return [
     // Products
-    'our_products' => 'Onze Producten',
-    'add_to_cart' => 'In Winkelwagen',
+    'our_products' => 'Onze producten',
+    'add_to_cart' => 'In winkelwagen',
     'in_stock' => 'Op voorraad',
     'out_of_stock' => 'Uitverkocht',
     'not_orderable_online' => 'Niet online te bestellen',
@@ -18,7 +18,7 @@ return [
     'cart' => 'Winkelwagen',
     'cart_empty' => 'Je winkelwagen is leeg',
     'cart_empty_message' => 'Het lijkt erop dat je nog geen producten hebt toegevoegd.',
-    'continue_shopping' => 'Verder Winkelen',
+    'continue_shopping' => 'Verder winkelen',
     'remove' => 'Verwijderen',
     'subtotal' => 'Subtotaal',
     'processing_fee' => 'Transactiekosten',
@@ -33,24 +33,24 @@ return [
     'item_removed' => 'Product verwijderd uit je winkelwagen.',
 
     // Checkout
-    'order_confirmed' => 'Bestelling Bevestigd!',
+    'order_confirmed' => 'Bestelling bevestigd!',
     'order_confirmed_message' => 'Dank voor je steun! Je ontvangt binnenkort een bevestigingsmail met ophaalinformatie.',
-    'order_cancelled' => 'Bestelling Geannuleerd',
+    'order_cancelled' => 'Bestelling geannuleerd',
     'order_cancelled_message' => 'Je bestelling is geannuleerd. Je winkelwagen is nog steeds opgeslagen.',
-    'return_to_cart' => 'Terug naar Winkelwagen',
+    'return_to_cart' => 'Terug naar winkelwagen',
     'order_details' => 'Bestelgegevens',
     'order_number' => 'Bestelnummer',
 
     // Email
-    'order_confirmation_subject' => 'Bevestiging Bestelling #:number',
+    'order_confirmation_subject' => 'Bevestiging bestelling #:number',
     'name' => 'Naam',
     'items' => 'Artikelen',
     'email_footer' => 'Met paarse groet, Fundraising Team Volt Amsterdam',
     'email_pickup_info' => 'Je haalt je bestelling zelf op, op één van de ophaallocaties in de stad. We nemen contact met je op met de details.',
 
     // Admin Email
-    'admin_order_subject' => 'Nieuwe Bestelling #:number Ontvangen',
-    'admin_new_order' => 'Nieuwe Bestelling Ontvangen',
+    'admin_order_subject' => 'Nieuwe bestelling #:number ontvangen',
+    'admin_new_order' => 'Nieuwe bestelling ontvangen',
     'admin_order_message' => 'Er is een nieuwe bestelling #:number geplaatst en betaald.',
     'admin_customer_info' => 'Klantgegevens',
     'admin_email' => 'E-mail',
@@ -58,6 +58,6 @@ return [
     'admin_address' => 'Adres',
     'admin_order_date' => 'Besteldatum',
     'admin_email_footer' => 'Dit is een automatische melding van de Volt Amsterdam webshop.',
-    'admin_view_order' => 'Bekijk Bestelling in Admin',
+    'admin_view_order' => 'Bekijk bestelling in admin',
     'admin_language' => 'Taal',
 ];
