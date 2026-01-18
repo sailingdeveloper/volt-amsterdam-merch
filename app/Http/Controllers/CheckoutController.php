@@ -75,6 +75,9 @@ class CheckoutController extends Controller
         // Update order with Stripe session ID.
         $order->update(['stripe_session_id' => $session->id]);
 
+        // Mark cart as converted and link to order.
+        $this->cartService->markConverted($order);
+
         return redirect($session->url);
     }
 
@@ -101,9 +104,6 @@ class CheckoutController extends Controller
             $this->stripeService->handleCheckoutCompleted($session);
             $order->refresh();
         }
-
-        // Clear the cart after successful checkout.
-        $this->cartService->clear();
 
         return view('checkout.success', compact('order'));
     }

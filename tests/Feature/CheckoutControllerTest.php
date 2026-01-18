@@ -90,26 +90,36 @@ class CheckoutControllerTest extends TestCase
         $response->assertSee('50,29');
     }
 
-    public function test_checkout_success_clears_cart(): void
+    public function test_checkout_marks_cart_as_converted(): void
     {
-        $product = Product::factory()->create(['stock' => 10]);
-
-        $cartService = app(CartService::class);
-        $cartService->add($product->id);
-
-        Order::create([
-            'stripe_session_id' => 'cs_test_789',
-            'customer_email' => 'test@example.com',
-            'customer_name' => 'Test User',
-            'subtotal' => 2500,
-            'fee' => 29,
-            'total' => 2532,
-            'status' => 'paid',
+        $product = Product::factory()->create([
+            'price' => 2500,
+            'stock' => 10,
         ]);
 
-        $this->get('/checkout/success?session_id=cs_test_789');
+        // Add item to cart.
+        $this->post('/cart/add', ['product_id' => $product->id]);
 
-        $this->assertTrue($cartService->isEmpty());
+        // Mock Stripe service.
+        $mockSession = new \stdClass();
+        $mockSession->id = 'cs_test_converted';
+        $mockSession->url = 'https://checkout.stripe.com/test';
+
+        $mockStripeService = Mockery::mock(StripeService::class);
+        $mockStripeService->shouldReceive('createCheckoutSession')
+            ->once()
+            ->andReturn($mockSession);
+
+        $this->app->instance(StripeService::class, $mockStripeService);
+
+        // Go through checkout.
+        $this->post('/checkout');
+
+        // Verify cart is marked as converted and linked to order.
+        $order = Order::where('stripe_session_id', 'cs_test_converted')->first();
+        $this->assertNotNull($order);
+        $this->assertNotNull($order->cart);
+        $this->assertEquals('converted', $order->cart->status);
     }
 
     public function test_checkout_success_redirects_without_session_id(): void

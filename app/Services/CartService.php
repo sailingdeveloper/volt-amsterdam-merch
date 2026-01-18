@@ -2,13 +2,46 @@
 
 namespace App\Services;
 
+use App\Models\Cart;
+use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 
 class CartService
 {
-    protected const SESSION_KEY = 'cart';
+    protected const SESSION_CART_ID_KEY = 'cart_id';
+
+    protected ?Cart $cart = null;
+
+    /**
+     * Get or create the cart for the current session.
+     */
+    public function getCart(): Cart
+    {
+        if ($this->cart !== null) {
+            return $this->cart;
+        }
+
+        $cartId = Session::get(self::SESSION_CART_ID_KEY);
+
+        if ($cartId !== null) {
+            $this->cart = Cart::where('id', $cartId)
+                ->where('status', 'active')
+                ->first();
+
+            if ($this->cart !== null) {
+                return $this->cart;
+            }
+        }
+
+        // Create new cart and store ID in session.
+        $this->cart = Cart::create(['status' => 'active']);
+        Session::put(self::SESSION_CART_ID_KEY, $this->cart->id);
+
+        return $this->cart;
+    }
 
     /**
      * Get all items in the cart.
@@ -17,7 +50,15 @@ class CartService
      */
     public function getItem(): Collection
     {
-        return collect(Session::get(self::SESSION_KEY, []));
+        $cart = $this->getCart();
+
+        return $cart->items->map(function (CartItem $item) {
+            return [
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'size' => $item->size,
+            ];
+        });
     }
 
     /**
@@ -25,26 +66,24 @@ class CartService
      */
     public function add(int $productId, int $quantity = 1, ?string $size = null): void
     {
-        $items = $this->getItem()->toArray();
-        $found = false;
+        $cart = $this->getCart();
 
-        foreach ($items as &$item) {
-            if ($item['product_id'] === $productId && ($item['size'] ?? null) === $size) {
-                $item['quantity'] += $quantity;
-                $found = true;
-                break;
-            }
-        }
+        $item = $cart->items()
+            ->where('product_id', $productId)
+            ->where('size', $size)
+            ->first();
 
-        if ($found === false) {
-            $items[] = [
+        if ($item !== null) {
+            $item->increment('quantity', $quantity);
+        } else {
+            $cart->items()->create([
                 'product_id' => $productId,
                 'quantity' => $quantity,
                 'size' => $size,
-            ];
+            ]);
         }
 
-        Session::put(self::SESSION_KEY, $items);
+        $cart->touch();
     }
 
     /**
@@ -54,19 +93,18 @@ class CartService
     {
         if ($quantity <= 0) {
             $this->remove($productId, $size);
+
             return;
         }
 
-        $items = $this->getItem()->toArray();
+        $cart = $this->getCart();
 
-        foreach ($items as &$item) {
-            if ($item['product_id'] === $productId && ($item['size'] ?? null) === $size) {
-                $item['quantity'] = $quantity;
-                break;
-            }
-        }
+        $cart->items()
+            ->where('product_id', $productId)
+            ->where('size', $size)
+            ->update(['quantity' => $quantity]);
 
-        Session::put(self::SESSION_KEY, $items);
+        $cart->touch();
     }
 
     /**
@@ -74,15 +112,14 @@ class CartService
      */
     public function remove(int $productId, ?string $size = null): void
     {
-        $items = $this->getItem()->filter(function ($item) use ($productId, $size) {
-            if ($item['product_id'] !== $productId) {
-                return true;
-            }
+        $cart = $this->getCart();
 
-            return ($item['size'] ?? null) !== $size;
-        })->values()->toArray();
+        $cart->items()
+            ->where('product_id', $productId)
+            ->where('size', $size)
+            ->delete();
 
-        Session::put(self::SESSION_KEY, $items);
+        $cart->touch();
     }
 
     /**
@@ -90,7 +127,9 @@ class CartService
      */
     public function clear(): void
     {
-        Session::forget(self::SESSION_KEY);
+        $cart = $this->getCart();
+        $cart->items()->delete();
+        $cart->touch();
     }
 
     /**
@@ -98,7 +137,7 @@ class CartService
      */
     public function getCount(): int
     {
-        return $this->getItem()->sum('quantity');
+        return $this->getCart()->items()->sum('quantity');
     }
 
     /**
@@ -108,27 +147,19 @@ class CartService
      */
     public function getItemWithProduct(): Collection
     {
-        $items = $this->getItem();
+        $cart = $this->getCart();
+        $items = $cart->items()->with('product')->get();
 
-        if ($items->isEmpty()) {
-            return collect();
-        }
-
-        $productIds = $items->pluck('product_id');
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
-
-        return $items->map(function ($item) use ($products) {
-            $product = $products->get($item['product_id']);
-
-            if ($product === null) {
+        return $items->map(function (CartItem $item) {
+            if ($item->product === null) {
                 return null;
             }
 
             return [
-                'product' => $product,
-                'quantity' => $item['quantity'],
-                'size' => $item['size'] ?? null,
-                'subtotal' => $product->price * $item['quantity'],
+                'product' => $item->product,
+                'quantity' => $item->quantity,
+                'size' => $item->size,
+                'subtotal' => $item->product->price * $item->quantity,
             ];
         })->filter()->values();
     }
@@ -166,7 +197,7 @@ class CartService
      */
     public function isEmpty(): bool
     {
-        return $this->getItem()->isEmpty();
+        return $this->getCount() === 0;
     }
 
     /**
@@ -191,5 +222,21 @@ class CartService
     public function getFormattedTotal(): string
     {
         return number_format($this->getTotal() / 100, 2, ',', '.');
+    }
+
+    /**
+     * Mark the cart as converted and link it to the order.
+     */
+    public function markConverted(Order $order): void
+    {
+        $cart = $this->getCart();
+        $cart->update([
+            'status' => 'converted',
+            'order_id' => $order->id,
+        ]);
+
+        // Clear the cart reference so a new cart is created for future purchases.
+        Session::forget(self::SESSION_CART_ID_KEY);
+        $this->cart = null;
     }
 }
