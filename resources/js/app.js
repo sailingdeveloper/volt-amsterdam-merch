@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({
                         product_id: form.querySelector('input[name="product_id"]').value,
-                        quantity: form.querySelector('select[name="quantity"]')?.value || 1
+                        quantity: form.querySelector('select[name="quantity"]')?.value || 1,
+                        size: form.querySelector('select[name="size"]')?.value || null
                     })
                 });
                 
