@@ -35,7 +35,10 @@ class OrderResource extends Resource
                         Infolists\Components\TextEntry::make('customer_phone')
                             ->label('Phone')
                             ->placeholder('-'),
-                    ])->columns(3),
+                        Infolists\Components\TextEntry::make('locale')
+                            ->label('Language')
+                            ->formatStateUsing(fn (string $state): string => $state === 'nl' ? 'Nederlands' : 'English'),
+                    ])->columns(4),
 
                 Infolists\Components\Section::make('Billing Address')
                     ->schema([

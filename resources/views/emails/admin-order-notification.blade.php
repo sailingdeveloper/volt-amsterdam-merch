@@ -66,6 +66,10 @@
                                                 </td>
                                             </tr>
                                             @endif
+                                            <tr>
+                                                <td style="padding: 6px 0; color: #6b7280; font-size: 14px;">{{ __('shop.admin_language') }}</td>
+                                                <td style="padding: 6px 0; color: #111827; font-size: 14px;">{{ $order->locale === 'nl' ? 'Nederlands' : 'English' }}</td>
+                                            </tr>
                                         </table>
                                     </td>
                                 </tr>

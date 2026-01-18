@@ -59,4 +59,5 @@ return [
     'admin_order_date' => 'Order date',
     'admin_email_footer' => 'This is an automated notification from the Volt Amsterdam webshop.',
     'admin_view_order' => 'View Order in Admin',
+    'admin_language' => 'Language',
 ];

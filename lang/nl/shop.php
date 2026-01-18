@@ -59,4 +59,5 @@ return [
     'admin_order_date' => 'Besteldatum',
     'admin_email_footer' => 'Dit is een automatische melding van de Volt Amsterdam webshop.',
     'admin_view_order' => 'Bekijk Bestelling in Admin',
+    'admin_language' => 'Taal',
 ];
