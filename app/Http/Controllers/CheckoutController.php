@@ -30,8 +30,13 @@ class CheckoutController extends Controller
 
         // Prepare line items for Stripe.
         $allLineItem = $allItemWithProduct->map(function ($item) {
+            $name = $item['product']->localized_name;
+            if ($item['size']) {
+                $name .= ' (' . $item['size'] . ')';
+            }
+
             return [
-                'name' => $item['product']->localized_name,
+                'name' => $name,
                 'price' => $item['product']->price,
                 'quantity' => $item['quantity'],
             ];
@@ -52,6 +57,7 @@ class CheckoutController extends Controller
         foreach ($allItemWithProduct as $item) {
             $order->item()->create([
                 'product_id' => $item['product']->id,
+                'size' => $item['size'],
                 'quantity' => $item['quantity'],
                 'price' => $item['product']->price,
             ]);
@@ -87,6 +93,13 @@ class CheckoutController extends Controller
 
         if ($order === null) {
             return redirect()->route('products.index');
+        }
+
+        // Process payment completion if not already processed by webhook.
+        if ($order->status === 'pending') {
+            $session = $this->stripeService->getSession($sessionId);
+            $this->stripeService->handleCheckoutCompleted($session);
+            $order->refresh();
         }
 
         // Clear the cart after successful checkout.

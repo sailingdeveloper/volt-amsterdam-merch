@@ -57,7 +57,7 @@
                                                 @foreach($order->item as $item)
                                                 <tr>
                                                     <td style="padding: 6px 0; color: #374151; font-size: 14px;">
-                                                        {{ $item->product?->name ?? 'Product' }} × {{ $item->quantity }}
+                                                        {{ $item->product?->name ?? 'Product' }}@if($item->size) ({{ $item->size }})@endif × {{ $item->quantity }}
                                                     </td>
                                                     <td style="padding: 6px 0; color: #374151; font-size: 14px; text-align: right;">
                                                         €{{ $item->formatted_total }}

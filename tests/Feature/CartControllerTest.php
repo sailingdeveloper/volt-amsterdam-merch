@@ -10,6 +10,12 @@ class CartControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->get('/language/en');
+    }
+
     public function test_cart_page_loads_successfully(): void
     {
         $response = $this->get('/cart');
@@ -133,5 +139,60 @@ class CartControllerTest extends TestCase
         $response->assertSee('Winkelwagen');
         $response->assertSee('Subtotaal');
         $response->assertSee('Transactiekosten');
+    }
+
+    public function test_can_add_sized_product_to_cart(): void
+    {
+        $product = Product::factory()->withSizes()->create();
+
+        $response = $this->post('/cart/add', [
+            'product_id' => $product->id,
+            'size' => 'M',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->get('/cart')
+            ->assertSee($product->name)
+            ->assertSee('Size: M');
+    }
+
+    public function test_cannot_add_sized_product_without_size(): void
+    {
+        $product = Product::factory()->withSizes()->create();
+
+        $response = $this->post('/cart/add', [
+            'product_id' => $product->id,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
+
+    public function test_cannot_add_out_of_stock_size(): void
+    {
+        $product = Product::factory()->withSizesOutOfStock()->create();
+
+        $response = $this->post('/cart/add', [
+            'product_id' => $product->id,
+            'size' => 'M',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+    }
+
+    public function test_same_product_different_sizes_are_separate_cart_items(): void
+    {
+        $product = Product::factory()->withSizes()->create();
+
+        $this->post('/cart/add', ['product_id' => $product->id, 'size' => 'S']);
+        $this->post('/cart/add', ['product_id' => $product->id, 'size' => 'M']);
+
+        $response = $this->get('/cart');
+
+        $response->assertSee('Size: S');
+        $response->assertSee('Size: M');
     }
 }

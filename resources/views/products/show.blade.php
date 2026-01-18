@@ -19,17 +19,40 @@
             </nav>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {{-- Product Image --}}
-                <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
-                    @if($product->image)
-                        <img src="{{ Storage::url($product->image) }}"
-                             alt="{{ $product->localized_name }}"
-                             class="h-full w-full object-cover">
-                    @else
-                        <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-volt-purple/10 to-volt-purple/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-32 h-32 text-volt-purple/40">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                            </svg>
+                {{-- Product Images --}}
+                <div class="space-y-4">
+                    @php
+                        $allImage = $product->all_image;
+                    @endphp
+
+                    {{-- Main Image --}}
+                    <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+                        @if(count($allImage) > 0)
+                            <img src="{{ Storage::url($allImage[0]) }}"
+                                 alt="{{ $product->localized_name }}"
+                                 class="h-full w-full object-cover"
+                                 id="main-product-image">
+                        @else
+                            <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-volt-purple/10 to-volt-purple/20">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-32 h-32 text-volt-purple/40">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Thumbnail Gallery --}}
+                    @if(count($allImage) > 1)
+                        <div class="grid grid-cols-4 gap-3">
+                            @foreach($allImage as $index => $imagePath)
+                                <button type="button"
+                                        onclick="document.getElementById('main-product-image').src = '{{ Storage::url($imagePath) }}'"
+                                        class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 hover:border-volt-purple transition-colors {{ $index === 0 ? 'border-volt-purple' : 'border-transparent' }}">
+                                    <img src="{{ Storage::url($imagePath) }}"
+                                         alt="{{ $product->localized_name }} - {{ $index + 1 }}"
+                                         class="h-full w-full object-cover">
+                                </button>
+                            @endforeach
                         </div>
                     @endif
                 </div>
@@ -53,13 +76,32 @@
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
 
+                            @if($product->hasSizes())
+                                <div>
+                                    <label for="size" class="block text-sm font-medium text-gray-700 mb-2">
+                                        {{ __('shop.size') }}
+                                    </label>
+                                    <select name="size" id="size" required
+                                            class="block w-full sm:w-48 rounded-lg border-gray-300 shadow-sm focus:border-volt-purple focus:ring-volt-purple">
+                                        <option value="">{{ __('shop.select_size') }}</option>
+                                        @foreach($product->sizes as $size => $stock)
+                                            @if($stock > 0)
+                                                <option value="{{ $size }}">{{ $size }}</option>
+                                            @else
+                                                <option value="{{ $size }}" disabled>{{ $size }} - {{ __('shop.out_of_stock') }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
                             <div>
                                 <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">
                                     {{ __('shop.quantity') }}
                                 </label>
                                 <select name="quantity" id="quantity"
                                         class="block w-24 rounded-lg border-gray-300 shadow-sm focus:border-volt-purple focus:ring-volt-purple">
-                                    @for($i = 1; $i <= min(10, $product->stock); $i++)
+                                    @for($i = 1; $i <= 10; $i++)
                                         <option value="{{ $i }}">{{ $i }}</option>
                                     @endfor
                                 </select>

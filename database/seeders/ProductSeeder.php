@@ -8,11 +8,40 @@ use Illuminate\Database\Seeder;
 class ProductSeeder extends Seeder
 {
     /**
+     * Standard clothing sizes.
+     */
+    protected const SIZE_CLOTHING = ['XS' => 10, 'S' => 15, 'M' => 20, 'L' => 15, 'XL' => 10, 'XXL' => 5];
+
+    /**
+     * One-size for scarves.
+     */
+    protected const SIZE_ONE = ['1' => 25];
+
+    /**
+     * Clothing description in English.
+     */
+    protected const DESCRIPTION_CLOTHING_EN = "Specially for our campaign in Amsterdam, we've designed hoodies, long-sleeves, and a scarf.
+
+Not standard Volt merchandise, but exclusive to this campaign. Limited edition. Extra hip.
+
+There are hoodies, long-sleeves, and scarves. Not only in purple, because that's not everyone's colour. Volt's values, fortunately, are. 💜";
+
+    /**
+     * Clothing description in Dutch.
+     */
+    protected const DESCRIPTION_CLOTHING_NL = "Speciaal voor onze campagne in Amsterdam hebben we hoodies, long-sleeves en een sjaal ontworpen.
+
+Geen standaard Volt-merch, maar exclusief voor deze campagne. Limited edition. Dus extra hip.
+
+Er zijn hoodies, long-sleeves en sjalen. Niet alleen in het paars, want dat is niet ieders kleur. Het gedachtegoed van Volt gelukkig wél. 💜";
+
+    /**
      * Run the database seeds.
      */
     public function run(): void
     {
         $allProduct = [
+            // Beer.
             [
                 'name' => 'Voltreffer Sixpack',
                 'name_nl' => 'Voltreffer Sixpack',
@@ -37,6 +66,7 @@ Dus:
                 'stock' => 100,
                 'active' => true,
             ],
+            // Bike bell.
             [
                 'name' => 'Volt Bike Bell',
                 'name_nl' => 'Volt-fietsbel',
@@ -62,22 +92,64 @@ Zij stuurt je vervolgens een Tikkie, waarna je de fietsbel bij haar kunt ophalen
                 'active' => true,
                 'orderable' => false,
             ],
+            // Hoodie Purple.
             [
-                'name' => 'Volt AMS Hoodie (White)',
-                'name_nl' => 'Volt AMS Hoodie (Wit)',
-                'slug' => 'volt-ams-hoodie-wit',
-                'description' => "Specially for our campaign in Amsterdam, we've designed hoodies, long-sleeves, and a scarf.
-
-Not standard Volt merchandise, but exclusive to this campaign. Limited edition. Extra hip.
-
-There are hoodies, long-sleeves, and scarves. Not only in purple, because that's not everyone's colour. Volt's values, fortunately, are. 💜",
-                'description_nl' => "Speciaal voor onze campagne in Amsterdam hebben we hoodies, long-sleeves en een sjaal ontworpen.
-
-Geen standaard Volt-merch, maar exclusief voor deze campagne. Limited edition. Dus extra hip.
-
-Er zijn hoodies, long-sleeves en sjalen. Niet alleen in het paars, want dat is niet ieders kleur. Het gedachtegoed van Volt gelukkig wél. 💜",
+                'name' => 'Hoodie (Purple)',
+                'name_nl' => 'Hoodie (Paars)',
+                'slug' => 'hoodie-paars',
+                'description' => self::DESCRIPTION_CLOTHING_EN,
+                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
+                'price' => 4900,
+                'stock' => null,
+                'sizes' => self::SIZE_CLOTHING,
+                'active' => true,
+            ],
+            // Hoodie White.
+            [
+                'name' => 'Hoodie (White)',
+                'name_nl' => 'Hoodie (Wit)',
+                'slug' => 'hoodie-wit',
+                'description' => self::DESCRIPTION_CLOTHING_EN,
+                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
+                'price' => 4900,
+                'stock' => null,
+                'sizes' => self::SIZE_CLOTHING,
+                'active' => true,
+            ],
+            // Long-sleeve shirt Purple.
+            [
+                'name' => 'Long-Sleeve Shirt (Purple)',
+                'name_nl' => 'Long-Sleeve Shirt (Paars)',
+                'slug' => 'long-sleeve-paars',
+                'description' => self::DESCRIPTION_CLOTHING_EN,
+                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
+                'price' => 2800,
+                'stock' => null,
+                'sizes' => self::SIZE_CLOTHING,
+                'active' => true,
+            ],
+            // Long-sleeve shirt White.
+            [
+                'name' => 'Long-Sleeve Shirt (White)',
+                'name_nl' => 'Long-Sleeve Shirt (Wit)',
+                'slug' => 'long-sleeve-wit',
+                'description' => self::DESCRIPTION_CLOTHING_EN,
+                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
+                'price' => 2800,
+                'stock' => null,
+                'sizes' => self::SIZE_CLOTHING,
+                'active' => true,
+            ],
+            // Scarf White.
+            [
+                'name' => 'Scarf (White)',
+                'name_nl' => 'Sjaal (Wit)',
+                'slug' => 'sjaal-wit',
+                'description' => self::DESCRIPTION_CLOTHING_EN,
+                'description_nl' => self::DESCRIPTION_CLOTHING_NL,
                 'price' => 2500,
-                'stock' => 50,
+                'stock' => null,
+                'sizes' => self::SIZE_ONE,
                 'active' => true,
             ],
         ];

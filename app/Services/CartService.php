@@ -13,7 +13,7 @@ class CartService
     /**
      * Get all items in the cart.
      *
-     * @return Collection<int, array{product_id: int, quantity: int}>
+     * @return Collection<int, array{product_id: int, quantity: int, size: ?string}>
      */
     public function getItem(): Collection
     {
@@ -23,13 +23,13 @@ class CartService
     /**
      * Add a product to the cart.
      */
-    public function add(int $productId, int $quantity = 1): void
+    public function add(int $productId, int $quantity = 1, ?string $size = null): void
     {
         $allItem = $this->getItem()->toArray();
         $found = false;
 
         foreach ($allItem as &$item) {
-            if ($item['product_id'] === $productId) {
+            if ($item['product_id'] === $productId && ($item['size'] ?? null) === $size) {
                 $item['quantity'] += $quantity;
                 $found = true;
                 break;
@@ -40,6 +40,7 @@ class CartService
             $allItem[] = [
                 'product_id' => $productId,
                 'quantity' => $quantity,
+                'size' => $size,
             ];
         }
 
@@ -49,17 +50,17 @@ class CartService
     /**
      * Update the quantity of an item in the cart.
      */
-    public function update(int $productId, int $quantity): void
+    public function update(int $productId, int $quantity, ?string $size = null): void
     {
         if ($quantity <= 0) {
-            $this->remove($productId);
+            $this->remove($productId, $size);
             return;
         }
 
         $allItem = $this->getItem()->toArray();
 
         foreach ($allItem as &$item) {
-            if ($item['product_id'] === $productId) {
+            if ($item['product_id'] === $productId && ($item['size'] ?? null) === $size) {
                 $item['quantity'] = $quantity;
                 break;
             }
@@ -71,10 +72,14 @@ class CartService
     /**
      * Remove an item from the cart.
      */
-    public function remove(int $productId): void
+    public function remove(int $productId, ?string $size = null): void
     {
-        $allItem = $this->getItem()->filter(function ($item) use ($productId) {
-            return $item['product_id'] !== $productId;
+        $allItem = $this->getItem()->filter(function ($item) use ($productId, $size) {
+            if ($item['product_id'] !== $productId) {
+                return true;
+            }
+
+            return ($item['size'] ?? null) !== $size;
         })->values()->toArray();
 
         Session::put(self::SESSION_KEY, $allItem);
@@ -99,7 +104,7 @@ class CartService
     /**
      * Get cart items with product details.
      *
-     * @return Collection<int, array{product: Product, quantity: int, subtotal: int}>
+     * @return Collection<int, array{product: Product, quantity: int, size: ?string, subtotal: int}>
      */
     public function getItemWithProduct(): Collection
     {
@@ -122,6 +127,7 @@ class CartService
             return [
                 'product' => $product,
                 'quantity' => $item['quantity'],
+                'size' => $item['size'] ?? null,
                 'subtotal' => $product->price * $item['quantity'],
             ];
         })->filter()->values();

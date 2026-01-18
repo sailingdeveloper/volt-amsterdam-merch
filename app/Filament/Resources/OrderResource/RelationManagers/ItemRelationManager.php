@@ -19,6 +19,9 @@ class ItemRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('product.name')
                     ->label('Product'),
+                Tables\Columns\TextColumn::make('size')
+                    ->label('Size')
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric(),
                 Tables\Columns\TextColumn::make('price')

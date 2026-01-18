@@ -187,4 +187,81 @@ class CartServiceTest extends TestCase
 
         $this->assertCount(0, $allItem);
     }
+
+    public function test_can_add_item_with_size(): void
+    {
+        $product = Product::factory()->withSizes()->create(['price' => 2500]);
+
+        $this->cartService->add($product->id, 1, 'M');
+
+        $allItem = $this->cartService->getItem();
+
+        $this->assertCount(1, $allItem);
+        $this->assertEquals('M', $allItem[0]['size']);
+    }
+
+    public function test_same_product_different_sizes_are_separate(): void
+    {
+        $product = Product::factory()->withSizes()->create(['price' => 2500]);
+
+        $this->cartService->add($product->id, 1, 'S');
+        $this->cartService->add($product->id, 1, 'M');
+
+        $allItem = $this->cartService->getItem();
+
+        $this->assertCount(2, $allItem);
+        $this->assertEquals(2, $this->cartService->getCount());
+    }
+
+    public function test_adding_same_product_same_size_increases_quantity(): void
+    {
+        $product = Product::factory()->withSizes()->create(['price' => 2500]);
+
+        $this->cartService->add($product->id, 2, 'M');
+        $this->cartService->add($product->id, 3, 'M');
+
+        $allItem = $this->cartService->getItem();
+
+        $this->assertCount(1, $allItem);
+        $this->assertEquals(5, $this->cartService->getCount());
+    }
+
+    public function test_can_update_item_with_size(): void
+    {
+        $product = Product::factory()->withSizes()->create(['price' => 2500]);
+
+        $this->cartService->add($product->id, 2, 'M');
+        $this->cartService->update($product->id, 5, 'M');
+
+        $this->assertEquals(5, $this->cartService->getCount());
+    }
+
+    public function test_can_remove_item_with_size(): void
+    {
+        $product = Product::factory()->withSizes()->create(['price' => 2500]);
+
+        $this->cartService->add($product->id, 2, 'S');
+        $this->cartService->add($product->id, 2, 'M');
+        $this->cartService->remove($product->id, 'S');
+
+        $allItem = $this->cartService->getItem();
+
+        $this->assertCount(1, $allItem);
+        $this->assertEquals('M', $allItem[0]['size']);
+    }
+
+    public function test_get_items_with_product_includes_size(): void
+    {
+        $product = Product::factory()->withSizes()->create([
+            'name' => 'Test Product',
+            'price' => 2500,
+        ]);
+
+        $this->cartService->add($product->id, 2, 'L');
+
+        $allItem = $this->cartService->getItemWithProduct();
+
+        $this->assertCount(1, $allItem);
+        $this->assertEquals('L', $allItem[0]['size']);
+    }
 }

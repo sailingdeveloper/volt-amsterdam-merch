@@ -39,10 +39,28 @@
             <form action="{{ route('cart.add') }}" method="POST" data-add-to-cart>
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
-                <button type="submit"
-                        class="w-full bg-volt-purple hover:bg-volt-purple-dark text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                    {{ __('shop.add_to_cart') }}
-                </button>
+                @if($product->hasSizes())
+                    <div class="flex gap-2">
+                        <select name="size" required
+                                class="w-24 bg-white text-gray-700 font-medium py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-volt-purple focus:border-volt-purple cursor-pointer">
+                            <option value="">{{ __('shop.size') }}</option>
+                            @foreach($product->sizes as $size => $stock)
+                                @if($stock > 0)
+                                    <option value="{{ $size }}">{{ $size }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                        <button type="submit"
+                                class="flex-1 bg-volt-purple hover:bg-volt-purple-dark text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                            {{ __('shop.add_to_cart') }}
+                        </button>
+                    </div>
+                @else
+                    <button type="submit"
+                            class="w-full bg-volt-purple hover:bg-volt-purple-dark text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        {{ __('shop.add_to_cart') }}
+                    </button>
+                @endif
             </form>
         @elseif($product->orderable === false)
             <a href="{{ route('products.show', $product->slug) }}"

@@ -10,6 +10,9 @@ return [
     'view' => 'Bekijken',
     'quantity' => 'Aantal',
     'each' => 'per stuk',
+    'size' => 'Maat',
+    'select_size' => 'Kies een maat',
+    'size_required' => 'Selecteer een maat.',
 
     // Cart
     'cart' => 'Winkelwagen',

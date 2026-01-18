@@ -10,6 +10,9 @@ return [
     'view' => 'View',
     'quantity' => 'Quantity',
     'each' => 'each',
+    'size' => 'Size',
+    'select_size' => 'Select a size',
+    'size_required' => 'Please select a size.',
 
     // Cart
     'cart' => 'Shopping Cart',

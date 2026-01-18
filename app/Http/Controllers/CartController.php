@@ -37,11 +37,30 @@ class CartController extends Controller
         $validated = $request->validate([
             'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'integer|min:1|max:10',
+            'size' => 'nullable|string|max:10',
         ]);
 
         $product = Product::findOrFail($validated['product_id']);
+        $size = $validated['size'] ?? null;
 
-        if ($product->isInStock() === false) {
+        // If product has sizes, size is required.
+        if ($product->hasSizes() && $size === null) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('shop.size_required'),
+                ], 400);
+            }
+
+            return back()->with('error', __('shop.size_required'));
+        }
+
+        // Check stock for the specific size.
+        $isInStock = $product->hasSizes()
+            ? $product->isSizeInStock($size)
+            : $product->isInStock();
+
+        if ($isInStock === false) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,
@@ -54,7 +73,8 @@ class CartController extends Controller
 
         $this->cartService->add(
             $validated['product_id'],
-            $validated['quantity'] ?? 1
+            $validated['quantity'] ?? 1,
+            $size
         );
 
         if ($request->wantsJson()) {
@@ -79,11 +99,13 @@ class CartController extends Controller
         $validated = $request->validate([
             'product_id' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:0|max:10',
+            'size' => 'nullable|string|max:10',
         ]);
 
         $this->cartService->update(
             $validated['product_id'],
-            $validated['quantity']
+            $validated['quantity'],
+            $validated['size'] ?? null
         );
 
         return back()->with('success', __('shop.cart_updated'));
@@ -96,9 +118,13 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'product_id' => 'required|integer|exists:products,id',
+            'size' => 'nullable|string|max:10',
         ]);
 
-        $this->cartService->remove($validated['product_id']);
+        $this->cartService->remove(
+            $validated['product_id'],
+            $validated['size'] ?? null
+        );
 
         return back()->with('success', __('shop.item_removed'));
     }

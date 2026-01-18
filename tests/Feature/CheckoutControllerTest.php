@@ -14,6 +14,12 @@ class CheckoutControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->get('/language/en');
+    }
+
     public function test_checkout_redirects_if_cart_is_empty(): void
     {
         $response = $this->post('/checkout');

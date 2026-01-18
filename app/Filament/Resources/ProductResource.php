@@ -71,21 +71,53 @@ class ProductResource extends Resource
                             ->formatStateUsing(fn (?int $state): ?string => $state ? number_format($state / 100, 2, '.', '') : null)
                             ->dehydrateStateUsing(fn (?string $state): ?int => $state ? (int) round((float) $state * 100) : null),
                         Forms\Components\TextInput::make('stock')
-                            ->required()
                             ->numeric()
-                            ->default(0)
-                            ->minValue(0),
+                            ->nullable()
+                            ->minValue(0)
+                            ->helperText('Leave empty for products with sizes'),
                         Forms\Components\Toggle::make('active')
                             ->default(true),
                     ])->columns(3),
 
-                Forms\Components\Section::make('Image')
+                Forms\Components\Section::make('Sizes')
+                    ->description('Configure available sizes and their stock. Leave empty for products without sizes.')
+                    ->schema([
+                        Forms\Components\KeyValue::make('sizes')
+                            ->keyLabel('Size')
+                            ->valueLabel('Stock')
+                            ->keyPlaceholder('e.g. XS, S, M, L, XL, XXL')
+                            ->valuePlaceholder('Stock quantity')
+                            ->addActionLabel('Add size')
+                            ->dehydrateStateUsing(function (?array $state): ?array {
+                                if ($state === null) {
+                                    return null;
+                                }
+
+                                $result = [];
+                                foreach ($state as $size => $stock) {
+                                    $result[$size] = (int) $stock;
+                                }
+
+                                return count($result) > 0 ? $result : null;
+                            }),
+                    ]),
+
+                Forms\Components\Section::make('Images')
                     ->schema([
                         Forms\Components\FileUpload::make('image')
+                            ->label('Primary Image')
                             ->image()
                             ->disk('public')
                             ->directory('products')
                             ->imageEditor(),
+                        Forms\Components\FileUpload::make('images')
+                            ->label('Additional Images')
+                            ->multiple()
+                            ->image()
+                            ->disk('public')
+                            ->directory('products')
+                            ->imageEditor()
+                            ->reorderable(),
                     ]),
             ]);
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Mail\OrderConfirmation;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -113,8 +114,8 @@ class StripeService
         $order = Order::where('stripe_session_id', $session->id)->first();
 
         if ($order !== null) {
-            $customerDetails = $session->customer_details;
-            $address = $customerDetails?->address;
+            $customerDetails = $session->customer_details ?? null;
+            $address = $customerDetails->address ?? null;
 
             $order->update([
                 'status' => 'paid',
@@ -129,12 +130,22 @@ class StripeService
                 'billing_country' => $address?->country ?? null,
             ]);
 
+            // Decrement stock for each order item.
+            foreach ($order->item as $orderItem) {
+                if ($orderItem->product !== null) {
+                    $orderItem->product->decrementStockForSize(
+                        $orderItem->size ?? '',
+                        $orderItem->quantity
+                    );
+                }
+            }
+
             $this->sendOrderConfirmationEmail($order);
         }
     }
 
     /**
-     * Send order confirmation email to the customer.
+     * Send order confirmation email to the customer and all admins.
      */
     protected function sendOrderConfirmationEmail(Order $order): void
     {
@@ -142,6 +153,15 @@ class StripeService
             return;
         }
 
+        // Send to customer.
         Mail::to($order->customer_email)->send(new OrderConfirmation($order));
+
+        // Send to all admins.
+        $allAdminEmail = User::pluck('email')->toArray();
+        foreach ($allAdminEmail as $adminEmail) {
+            if ($adminEmail !== $order->customer_email) {
+                Mail::to($adminEmail)->send(new OrderConfirmation($order));
+            }
+        }
     }
 }

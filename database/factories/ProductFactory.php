@@ -33,6 +33,7 @@ class ProductFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'stock' => 0,
+            'sizes' => null,
         ]);
     }
 
@@ -40,6 +41,34 @@ class ProductFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'active' => false,
+        ]);
+    }
+
+    public function withSizes(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stock' => null,
+            'sizes' => [
+                'XS' => 5,
+                'S' => 10,
+                'M' => 15,
+                'L' => 10,
+                'XL' => 5,
+            ],
+        ]);
+    }
+
+    public function withSizesOutOfStock(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stock' => null,
+            'sizes' => [
+                'XS' => 0,
+                'S' => 0,
+                'M' => 0,
+                'L' => 0,
+                'XL' => 0,
+            ],
         ]);
     }
 }

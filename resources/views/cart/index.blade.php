@@ -45,6 +45,11 @@
                                                 {{ $item['product']->localized_name }}
                                             </a>
                                         </h3>
+                                        @if($item['size'])
+                                            <p class="text-sm text-gray-500">
+                                                {{ __('shop.size') }}: {{ $item['size'] }}
+                                            </p>
+                                        @endif
                                         <p class="mt-1 text-sm text-gray-500">
                                             &euro;{{ $item['product']->formatted_price }} {{ __('shop.each') }}
                                         </p>
@@ -54,6 +59,7 @@
                                             <form action="{{ route('cart.update') }}" method="POST" class="flex items-center space-x-2">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $item['product']->id }}">
+                                                <input type="hidden" name="size" value="{{ $item['size'] }}">
                                                 <select name="quantity"
                                                         onchange="this.form.submit()"
                                                         class="rounded-md border-gray-300 text-sm focus:border-volt-purple focus:ring-volt-purple">
@@ -69,6 +75,7 @@
                                             <form action="{{ route('cart.remove') }}" method="POST">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $item['product']->id }}">
+                                                <input type="hidden" name="size" value="{{ $item['size'] }}">
                                                 <button type="submit" class="text-sm text-red-600 hover:text-red-800">
                                                     {{ __('shop.remove') }}
                                                 </button>

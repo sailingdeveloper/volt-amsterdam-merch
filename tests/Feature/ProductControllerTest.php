@@ -10,6 +10,12 @@ class ProductControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->get('/language/en');
+    }
+
     public function test_landing_page_displays_products(): void
     {
         $productFirst = Product::factory()->create(['name' => 'Test Product One']);
