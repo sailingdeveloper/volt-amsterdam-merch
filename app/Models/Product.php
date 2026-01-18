@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model
 {
@@ -47,6 +48,14 @@ class Product extends Model
     public function orderItem(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return HasMany<PageView, $this>
+     */
+    public function pageViews(): HasMany
+    {
+        return $this->hasMany(PageView::class);
     }
 
     public function getFormattedPriceAttribute(): string

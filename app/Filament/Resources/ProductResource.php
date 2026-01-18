@@ -141,6 +141,11 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('active')
                     ->boolean(),
+                Tables\Columns\TextColumn::make('page_views_count')
+                    ->label('Views')
+                    ->counts('pageViews')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
