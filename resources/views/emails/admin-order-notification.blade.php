@@ -130,6 +130,13 @@
                         </td>
                     </tr>
 
+                    <!-- View Order Button -->
+                    <tr>
+                        <td style="padding: 0 40px 40px; text-align: center;">
+                            <a href="{{ url('/admin/orders/' . $order->id) }}" style="display: inline-block; background-color: #7c3aed; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">{{ __('shop.admin_view_order') }}</a>
+                        </td>
+                    </tr>
+
                     <!-- Footer -->
                     <tr>
                         <td style="padding: 24px 40px; background-color: #f9fafb; text-align: center; border-top: 1px solid #e5e7eb;">

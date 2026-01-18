@@ -67,9 +67,6 @@ class StripeService
             'success_url' => $successUrl,
             'cancel_url' => $cancelUrl,
             'locale' => app()->getLocale(),
-            'invoice_creation' => [
-                'enabled' => true,
-            ],
             'billing_address_collection' => 'required',
             'phone_number_collection' => [
                 'enabled' => true,
