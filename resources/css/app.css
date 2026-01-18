@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Ubuntu', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Volt Purple Theme */
+    --color-volt-purple: #502379;
+    --color-volt-purple-dark: #3d1b5c;
+    --color-volt-purple-light: #6b3a9e;
+    --color-volt-yellow: #FFD700;
+    --color-volt-yellow-dark: #e6c200;
+}
+
+/* Toast notification animation */
+.toast-notification {
+    animation: toast-fade 4s ease-in-out forwards;
+}
+
+@keyframes toast-fade {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
