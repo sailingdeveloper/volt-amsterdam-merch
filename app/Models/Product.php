@@ -28,6 +28,7 @@ class Product extends Model
         'sizes',
         'active',
         'orderable',
+        'sort_order',
     ];
 
     protected $casts = [
@@ -37,6 +38,7 @@ class Product extends Model
         'orderable' => 'boolean',
         'sizes' => 'array',
         'images' => 'array',
+        'sort_order' => 'integer',
     ];
 
     /**

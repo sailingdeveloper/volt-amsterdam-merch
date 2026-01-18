@@ -158,7 +158,8 @@ class ProductResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->reorderable('sort_order')
+            ->defaultSort('sort_order');
     }
 
     public static function getRelations(): array

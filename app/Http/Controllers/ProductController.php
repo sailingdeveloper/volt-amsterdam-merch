@@ -12,7 +12,9 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products = Product::where('active', true)->get();
+        $products = Product::where('active', true)
+            ->orderBy('sort_order')
+            ->get();
 
         return view('products.index', compact('products'));
     }
