@@ -20,7 +20,7 @@
                 <dl class="space-y-3">
                     <div class="flex justify-between">
                         <dt class="text-gray-500">{{ __('shop.order_number') }}</dt>
-                        <dd class="font-medium text-gray-900">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</dd>
+                        <dd class="font-medium text-gray-900">#{{ $order->order_number }}</dd>
                     </div>
                     <div class="flex justify-between">
                         <dt class="text-gray-500">{{ __('shop.subtotal') }}</dt>

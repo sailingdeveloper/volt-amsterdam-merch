@@ -39,6 +39,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function getOrderNumberAttribute(): string
+    {
+        return str_pad($this->id, 6, '0', STR_PAD_LEFT);
+    }
+
     public function getFormattedTotalAttribute(): string
     {
         return number_format($this->total / 100, 2, ',', '.');

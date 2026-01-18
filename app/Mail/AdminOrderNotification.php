@@ -21,7 +21,7 @@ class AdminOrderNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('shop.admin_order_subject', ['number' => $this->order->id]),
+            subject: __('shop.admin_order_subject', ['number' => $this->order->order_number]),
         );
     }
 

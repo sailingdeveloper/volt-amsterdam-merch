@@ -61,8 +61,8 @@ class OrderResource extends Resource
 
                 Infolists\Components\Section::make('Order Details')
                     ->schema([
-                        Infolists\Components\TextEntry::make('id')
-                            ->label('Order ID'),
+                        Infolists\Components\TextEntry::make('order_number')
+                            ->label('Order #'),
                         Infolists\Components\TextEntry::make('status')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
@@ -104,9 +104,9 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                Tables\Columns\TextColumn::make('order_number')
                     ->label('Order #')
-                    ->sortable(),
+                    ->sortable(query: fn ($query, string $direction) => $query->orderBy('id', $direction)),
                 Tables\Columns\TextColumn::make('customer_name')
                     ->searchable()
                     ->sortable(),

@@ -32,9 +32,9 @@ class LatestOrdersWidget extends BaseWidget
                     ->limit(10)
             )
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                Tables\Columns\TextColumn::make('order_number')
                     ->label('Order #')
-                    ->sortable(),
+                    ->sortable(query: fn ($query, string $direction) => $query->orderBy('id', $direction)),
                 Tables\Columns\TextColumn::make('customer_name')
                     ->label('Customer')
                     ->searchable(),

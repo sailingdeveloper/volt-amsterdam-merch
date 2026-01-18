@@ -40,7 +40,7 @@
                                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                                             <tr>
                                                 <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">{{ __('shop.order_number') }}</td>
-                                                <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 500; text-align: right;">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</td>
+                                                <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 500; text-align: right;">#{{ $order->order_number }}</td>
                                             </tr>
                                             @if($order->customer_name)
                                             <tr>
