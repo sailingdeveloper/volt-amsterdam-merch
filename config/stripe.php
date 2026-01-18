@@ -6,5 +6,5 @@ return [
     'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
 
     // iDEAL processing fee in cents.
-    'ideal_fee_cents' => 32,
+    'ideal_fee_cents' => 29,
 ];

@@ -47,7 +47,7 @@ class StripeWebhookTest extends TestCase
             'customer_email' => 'pending@example.com',
             'customer_name' => 'Pending',
             'subtotal' => 2500,
-            'fee' => 32,
+            'fee' => 29,
             'total' => 2532,
             'status' => 'pending',
         ]);
@@ -112,7 +112,7 @@ class StripeWebhookTest extends TestCase
             'customer_email' => 'pending@example.com',
             'customer_name' => 'Pending',
             'subtotal' => 2500,
-            'fee' => 32,
+            'fee' => 29,
             'total' => 2532,
             'status' => 'pending',
         ]);

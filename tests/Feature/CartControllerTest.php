@@ -123,8 +123,8 @@ class CartControllerTest extends TestCase
         $response = $this->get('/cart');
 
         $response->assertSee('25,00');
-        $response->assertSee('0,32');
-        $response->assertSee('25,32');
+        $response->assertSee('0,29');
+        $response->assertSee('25,29');
     }
 
     public function test_cart_displays_in_dutch(): void

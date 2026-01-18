@@ -114,7 +114,7 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id);
 
-        $this->assertEquals(32, $this->cartService->getFee());
+        $this->assertEquals(29, $this->cartService->getFee());
     }
 
     public function test_fee_is_zero_for_empty_cart(): void
@@ -128,8 +128,8 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id, 2);
 
-        // 2 * 2500 + 32 = 5032 cents.
-        $this->assertEquals(5032, $this->cartService->getTotal());
+        // 2 * 2500 + 29 = 5029 cents.
+        $this->assertEquals(5029, $this->cartService->getTotal());
     }
 
     public function test_formats_subtotal_correctly(): void
@@ -147,7 +147,7 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id);
 
-        $this->assertEquals('0,32', $this->cartService->getFormattedFee());
+        $this->assertEquals('0,29', $this->cartService->getFormattedFee());
     }
 
     public function test_formats_total_correctly(): void
@@ -156,7 +156,7 @@ class CartServiceTest extends TestCase
 
         $this->cartService->add($product->id);
 
-        $this->assertEquals('25,32', $this->cartService->getFormattedTotal());
+        $this->assertEquals('25,29', $this->cartService->getFormattedTotal());
     }
 
     public function test_get_items_with_product_returns_product_details(): void

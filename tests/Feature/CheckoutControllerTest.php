@@ -59,8 +59,8 @@ class CheckoutControllerTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'stripe_session_id' => 'cs_test_123',
             'subtotal' => 5000,
-            'fee' => 32,
-            'total' => 5032,
+            'fee' => 29,
+            'total' => 5029,
             'status' => 'pending',
         ]);
 
@@ -78,8 +78,8 @@ class CheckoutControllerTest extends TestCase
             'customer_email' => 'test@example.com',
             'customer_name' => 'Test User',
             'subtotal' => 5000,
-            'fee' => 32,
-            'total' => 5032,
+            'fee' => 29,
+            'total' => 5029,
             'status' => 'paid',
         ]);
 
@@ -87,7 +87,7 @@ class CheckoutControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Order Confirmed');
-        $response->assertSee('50,32');
+        $response->assertSee('50,29');
     }
 
     public function test_checkout_success_clears_cart(): void
@@ -102,7 +102,7 @@ class CheckoutControllerTest extends TestCase
             'customer_email' => 'test@example.com',
             'customer_name' => 'Test User',
             'subtotal' => 2500,
-            'fee' => 32,
+            'fee' => 29,
             'total' => 2532,
             'status' => 'paid',
         ]);
