@@ -11,6 +11,7 @@ return [
     'not_orderable_online' => 'Not available for online ordering',
     'view' => 'View',
     'favorite' => 'Favorite!',
+    'you_might_also_like' => 'You might also like',
     'quantity' => 'Quantity',
     'each' => 'each',
     'size' => 'Size',

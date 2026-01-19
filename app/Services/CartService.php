@@ -324,4 +324,20 @@ class CartService
         $this->cart = null;
         $this->cartLoaded = false;
     }
+
+    /**
+     * Get product IDs currently in the cart.
+     *
+     * @return Collection<int, int>
+     */
+    public function getProductIds(): Collection
+    {
+        $cart = $this->getCart();
+
+        if ($cart === null) {
+            return collect();
+        }
+
+        return $cart->items()->pluck('product_id')->unique();
+    }
 }

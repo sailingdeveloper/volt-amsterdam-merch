@@ -11,6 +11,7 @@ return [
     'not_orderable_online' => 'Niet online te bestellen',
     'view' => 'Bekijken',
     'favorite' => 'Favoriet!',
+    'you_might_also_like' => 'Misschien vind je dit ook leuk',
     'quantity' => 'Aantal',
     'each' => 'per stuk',
     'size' => 'Maat',

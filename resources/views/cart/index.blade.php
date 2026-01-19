@@ -130,6 +130,18 @@
                         &larr; {{ __('shop.continue_shopping') }}
                     </a>
                 </div>
+
+                {{-- Upsell Products --}}
+                @if($upsellProducts->isNotEmpty())
+                    <div class="mt-12">
+                        <h2 class="text-xl font-bold text-gray-900 mb-4">{{ __('shop.you_might_also_like') }}</h2>
+                        <div class="grid grid-cols-3 gap-3">
+                            @foreach($upsellProducts as $product)
+                                <x-product-card :product="$product" :compact="true" />
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
         </div>
     </div>
     @endif

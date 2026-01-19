@@ -26,7 +26,16 @@ class CartController extends Controller
         $total = $this->cartService->getFormattedTotal();
         $isEmpty = $this->cartService->isEmpty();
 
-        return view('cart.index', compact('items', 'subtotal', 'fee', 'total', 'isEmpty'));
+        // Get upsell products: top sellers not in cart
+        $cartProductIds = $this->cartService->getProductIds();
+        $upsellProducts = Product::whereIn('id', Product::getTopSellerIds(6))
+            ->whereNotIn('id', $cartProductIds)
+            ->where('active', true)
+            ->where('orderable', true)
+            ->take(3)
+            ->get();
+
+        return view('cart.index', compact('items', 'subtotal', 'fee', 'total', 'isEmpty', 'upsellProducts'));
     }
 
     /**
