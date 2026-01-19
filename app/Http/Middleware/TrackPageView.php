@@ -67,6 +67,12 @@ class TrackPageView
         'googleother',
         'adsbot',
         'mediapartners',
+        'updown.io',
+        'uptimerobot',
+        'pingdom',
+        'statuscake',
+        'site24x7',
+        'monitor',
     ];
 
     /**
