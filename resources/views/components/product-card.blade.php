@@ -45,8 +45,10 @@
                                 class="w-full sm:w-20 bg-white text-gray-700 text-sm font-medium py-2 px-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-volt-purple focus:border-volt-purple cursor-pointer">
                             <option value="">{{ __('shop.size') }}</option>
                             @foreach($product->ordered_sizes as $size => $stock)
-                                @if($stock > 0)
+                                @if($stock > 10)
                                     <option value="{{ $size }}">{{ $size }}</option>
+                                @elseif($stock > 0)
+                                    <option value="{{ $size }}">{{ $size }} ({{ $stock }})</option>
                                 @endif
                             @endforeach
                         </select>
