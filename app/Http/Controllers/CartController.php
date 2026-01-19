@@ -128,4 +128,20 @@ class CartController extends Controller
 
         return back()->with('success', __('shop.item_removed'));
     }
+
+    /**
+     * Update customer information on the cart.
+     */
+    public function updateCustomerInfo(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'email' => 'nullable|email|max:255',
+            'name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+        ]);
+
+        $this->cartService->updateCustomerInfo($validated);
+
+        return response()->json(['success' => true]);
+    }
 }

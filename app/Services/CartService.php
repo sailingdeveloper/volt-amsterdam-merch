@@ -272,6 +272,38 @@ class CartService
     }
 
     /**
+     * Update customer information on the cart.
+     *
+     * @param array<string, string|null> $data
+     */
+    public function updateCustomerInfo(array $data): void
+    {
+        $cart = $this->getOrCreateCart();
+
+        $cart->update(array_filter([
+            'customer_email' => $data['email'] ?? null,
+            'customer_name' => $data['name'] ?? null,
+            'customer_phone' => $data['phone'] ?? null,
+        ], fn ($value) => $value !== null));
+    }
+
+    /**
+     * Get customer information from the cart.
+     *
+     * @return array{email: ?string, name: ?string, phone: ?string}
+     */
+    public function getCustomerInfo(): array
+    {
+        $cart = $this->getCart();
+
+        return [
+            'email' => $cart?->customer_email,
+            'name' => $cart?->customer_name,
+            'phone' => $cart?->customer_phone,
+        ];
+    }
+
+    /**
      * Mark the cart as converted and link it to the order.
      */
     public function markConverted(Order $order): void

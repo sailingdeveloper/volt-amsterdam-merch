@@ -115,19 +115,13 @@
 
                     {{-- Checkout Button --}}
                     <div class="p-6 bg-white border-t border-gray-200">
-                        <form action="{{ route('checkout') }}" method="POST">
-                            @csrf
-                            <button type="submit"
-                                    class="w-full bg-volt-purple hover:bg-volt-purple-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2">
-                                <span>{{ __('shop.checkout_with_ideal') }}</span>
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </button>
-                        </form>
-                        <p class="mt-4 text-center text-sm text-gray-500">
-                            {{ __('shop.secure_payment') }}
-                        </p>
+                        <a href="{{ route('checkout.index') }}"
+                           class="w-full bg-volt-purple hover:bg-volt-purple-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2">
+                            <span>{{ __('shop.continue') }}</span>
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
 

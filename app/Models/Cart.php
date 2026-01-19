@@ -10,6 +10,9 @@ class Cart extends Model
 {
     protected $fillable = [
         'status',
+        'customer_email',
+        'customer_name',
+        'customer_phone',
         'order_id',
     ];
 

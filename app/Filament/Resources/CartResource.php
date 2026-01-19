@@ -48,6 +48,27 @@ class CartResource extends Resource
                             ->dateTime(),
                     ])->columns(4),
 
+                Infolists\Components\Section::make('Customer Information')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('customer_email')
+                            ->label('Email')
+                            ->placeholder('Not provided')
+                            ->copyable()
+                            ->icon('heroicon-o-envelope'),
+                        Infolists\Components\TextEntry::make('customer_name')
+                            ->label('Name')
+                            ->placeholder('Not provided')
+                            ->icon('heroicon-o-user'),
+                        Infolists\Components\TextEntry::make('customer_phone')
+                            ->label('Phone')
+                            ->placeholder('Not provided')
+                            ->copyable()
+                            ->icon('heroicon-o-phone'),
+                    ])->columns(3)
+                    ->visible(fn (Cart $record): bool => $record->customer_email !== null
+                        || $record->customer_name !== null
+                        || $record->customer_phone !== null),
+
                 Infolists\Components\Section::make('Linked Order')
                     ->schema([
                         Infolists\Components\TextEntry::make('order.order_number')
@@ -85,6 +106,16 @@ class CartResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('Cart ID')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('customer_email')
+                    ->label('Email')
+                    ->placeholder('-')
+                    ->searchable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('customer_name')
+                    ->label('Name')
+                    ->placeholder('-')
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('items_count')
                     ->label('Items')
                     ->counts('items')

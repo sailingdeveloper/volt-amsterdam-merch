@@ -264,4 +264,82 @@ class CartServiceTest extends TestCase
         $this->assertCount(1, $items);
         $this->assertEquals('L', $items[0]['size']);
     }
+
+    public function test_can_update_customer_email(): void
+    {
+        $this->cartService->updateCustomerInfo(['email' => 'test@example.com']);
+
+        $info = $this->cartService->getCustomerInfo();
+
+        $this->assertEquals('test@example.com', $info['email']);
+    }
+
+    public function test_can_update_customer_name(): void
+    {
+        $this->cartService->updateCustomerInfo(['name' => 'John Doe']);
+
+        $info = $this->cartService->getCustomerInfo();
+
+        $this->assertEquals('John Doe', $info['name']);
+    }
+
+    public function test_can_update_customer_phone(): void
+    {
+        $this->cartService->updateCustomerInfo(['phone' => '+31612345678']);
+
+        $info = $this->cartService->getCustomerInfo();
+
+        $this->assertEquals('+31612345678', $info['phone']);
+    }
+
+    public function test_can_update_multiple_customer_fields(): void
+    {
+        $this->cartService->updateCustomerInfo([
+            'email' => 'test@example.com',
+            'name' => 'John Doe',
+            'phone' => '+31612345678',
+        ]);
+
+        $info = $this->cartService->getCustomerInfo();
+
+        $this->assertEquals('test@example.com', $info['email']);
+        $this->assertEquals('John Doe', $info['name']);
+        $this->assertEquals('+31612345678', $info['phone']);
+    }
+
+    public function test_customer_info_returns_null_for_empty_cart(): void
+    {
+        $info = $this->cartService->getCustomerInfo();
+
+        $this->assertNull($info['email']);
+        $this->assertNull($info['name']);
+        $this->assertNull($info['phone']);
+    }
+
+    public function test_update_customer_info_creates_cart(): void
+    {
+        $this->assertNull($this->cartService->getCart());
+
+        $this->cartService->updateCustomerInfo(['email' => 'test@example.com']);
+
+        $this->assertNotNull($this->cartService->getCart());
+    }
+
+    public function test_partial_customer_info_update_preserves_existing(): void
+    {
+        $this->cartService->updateCustomerInfo([
+            'email' => 'test@example.com',
+            'name' => 'John Doe',
+        ]);
+
+        $this->cartService->updateCustomerInfo([
+            'phone' => '+31612345678',
+        ]);
+
+        $info = $this->cartService->getCustomerInfo();
+
+        $this->assertEquals('test@example.com', $info['email']);
+        $this->assertEquals('John Doe', $info['name']);
+        $this->assertEquals('+31612345678', $info['phone']);
+    }
 }

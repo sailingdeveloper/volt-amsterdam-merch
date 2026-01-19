@@ -195,4 +195,83 @@ class CartControllerTest extends TestCase
         $response->assertSee('Size: S');
         $response->assertSee('Size: M');
     }
+
+    public function test_can_update_customer_email(): void
+    {
+        $product = Product::factory()->create(['stock' => 10]);
+        $this->post('/cart/add', ['product_id' => $product->id]);
+
+        $response = $this->postJson('/cart/customer-info', [
+            'email' => 'test@example.com',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('carts', [
+            'customer_email' => 'test@example.com',
+        ]);
+    }
+
+    public function test_can_update_customer_name(): void
+    {
+        $product = Product::factory()->create(['stock' => 10]);
+        $this->post('/cart/add', ['product_id' => $product->id]);
+
+        $response = $this->postJson('/cart/customer-info', [
+            'name' => 'John Doe',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('carts', [
+            'customer_name' => 'John Doe',
+        ]);
+    }
+
+    public function test_can_update_customer_phone(): void
+    {
+        $product = Product::factory()->create(['stock' => 10]);
+        $this->post('/cart/add', ['product_id' => $product->id]);
+
+        $response = $this->postJson('/cart/customer-info', [
+            'phone' => '+31612345678',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('carts', [
+            'customer_phone' => '+31612345678',
+        ]);
+    }
+
+    public function test_customer_info_validates_email(): void
+    {
+        $product = Product::factory()->create(['stock' => 10]);
+        $this->post('/cart/add', ['product_id' => $product->id]);
+
+        $response = $this->postJson('/cart/customer-info', [
+            'email' => 'invalid-email',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('email');
+    }
+
+    public function test_customer_info_creates_cart_if_not_exists(): void
+    {
+        $response = $this->postJson('/cart/customer-info', [
+            'email' => 'test@example.com',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertDatabaseHas('carts', [
+            'customer_email' => 'test@example.com',
+            'status' => 'active',
+        ]);
+    }
 }
