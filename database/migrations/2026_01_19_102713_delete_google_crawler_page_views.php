@@ -10,24 +10,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Delete WhatsApp link preview requests.
-        DB::table('page_views')
-            ->where('user_agent', 'like', '%WhatsApp%')
-            ->delete();
-
-        // Delete Google crawler requests.
         DB::table('page_views')
             ->where('user_agent', 'like', '%Google-Read-Aloud%')
             ->orWhere('user_agent', 'like', '%Googlebot%')
             ->orWhere('user_agent', 'like', '%AdsBot%')
-            ->delete();
-
-        // Delete AWS health check requests.
-        DB::table('page_views')
-            ->where('ip_address', 'like', '34.%')
-            ->orWhere('ip_address', 'like', '35.%')
-            ->orWhere('ip_address', 'like', '52.%')
-            ->orWhere('ip_address', 'like', '54.%')
             ->delete();
     }
 

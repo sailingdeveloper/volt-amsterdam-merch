@@ -63,6 +63,10 @@ class TrackPageView
         'puppeteer',
         'playwright',
         'whatsapp',
+        'google-read-aloud',
+        'googleother',
+        'adsbot',
+        'mediapartners',
     ];
 
     /**
