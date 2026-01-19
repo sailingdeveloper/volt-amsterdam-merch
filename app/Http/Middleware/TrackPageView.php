@@ -62,6 +62,7 @@ class TrackPageView
         'selenium',
         'puppeteer',
         'playwright',
+        'whatsapp',
     ];
 
     /**
