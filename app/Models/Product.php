@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -192,5 +195,24 @@ class Product extends Model
         }
 
         return $images;
+    }
+
+    /**
+     * Get the IDs of top-selling products.
+     *
+     * @return Collection<int, int>
+     */
+    public static function getTopSellerIds(int $limit = 3): Collection
+    {
+        return Cache::remember('top_seller_ids', now()->addHour(), function () use ($limit) {
+            return DB::table('order_items')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->where('orders.status', 'paid')
+                ->select('order_items.product_id', DB::raw('SUM(order_items.quantity) as total_sold'))
+                ->groupBy('order_items.product_id')
+                ->orderByDesc('total_sold')
+                ->limit($limit)
+                ->pluck('product_id');
+        });
     }
 }

@@ -10,6 +10,7 @@ return [
     'out_of_stock' => 'Uitverkocht',
     'not_orderable_online' => 'Niet online te bestellen',
     'view' => 'Bekijken',
+    'favorite' => 'Favoriet!',
     'quantity' => 'Aantal',
     'each' => 'per stuk',
     'size' => 'Maat',

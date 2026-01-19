@@ -16,7 +16,9 @@ class ProductController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('products.index', compact('products'));
+        $topSellerIds = Product::getTopSellerIds(3);
+
+        return view('products.index', compact('products', 'topSellerIds'));
     }
 
     /**

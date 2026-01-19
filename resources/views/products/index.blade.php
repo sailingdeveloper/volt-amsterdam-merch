@@ -21,7 +21,7 @@
 
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 @foreach($products as $product)
-                    <x-product-card :product="$product" />
+                    <x-product-card :product="$product" :is-top-seller="$topSellerIds->contains($product->id)" />
                 @endforeach
             </div>
         </div>

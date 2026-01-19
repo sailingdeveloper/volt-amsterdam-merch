@@ -10,6 +10,7 @@ return [
     'out_of_stock' => 'Out of stock',
     'not_orderable_online' => 'Not available for online ordering',
     'view' => 'View',
+    'favorite' => 'Favorite!',
     'quantity' => 'Quantity',
     'each' => 'each',
     'size' => 'Size',
