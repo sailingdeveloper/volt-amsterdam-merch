@@ -108,8 +108,9 @@
                 <div class="mb-4 md:mb-0">
                     <img src="/images/logo.png" alt="Volt Amsterdam" class="h-6">
                 </div>
-                <div class="text-sm text-white/70">
-                    &copy; {{ date('Y') }} Volt Amsterdam. {{ __('messages.all_rights_reserved') }}
+                <div class="text-sm text-white/70 text-center md:text-right">
+                    <p>&copy; {{ date('Y') }} Volt Amsterdam. {{ __('messages.all_rights_reserved') }}</p>
+                    <p class="mt-1 text-white/50">{{ __('messages.made_with_love') }}</p>
                 </div>
             </div>
         </div>

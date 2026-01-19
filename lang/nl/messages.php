@@ -4,6 +4,7 @@ return [
     'welcome' => 'Welkom',
     'home' => 'Home',
     'all_rights_reserved' => 'Alle rechten voorbehouden.',
+    'made_with_love' => 'Met liefde gemaakt door Thijs de Maa voor Volt Amsterdam',
 
     // Hero
     'hero_title' => 'Volt Amsterdam Merch',
