@@ -92,6 +92,13 @@ class TrackPageView
     }
 
     /**
+     * Ignored IP addresses.
+     */
+    protected const IGNORED_IPS = [
+        '95.98.208.183',
+    ];
+
+    /**
      * AWS IP ranges (common health check sources).
      */
     protected const AWS_IP_PREFIXES = [
@@ -114,6 +121,16 @@ class TrackPageView
     {
         // Only track GET requests.
         if ($request->method() !== 'GET') {
+            return false;
+        }
+
+        // Skip logged-in admin users.
+        if (auth()->check()) {
+            return false;
+        }
+
+        // Skip ignored IPs.
+        if (in_array($request->ip(), self::IGNORED_IPS)) {
             return false;
         }
 
