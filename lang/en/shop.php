@@ -6,6 +6,7 @@ return [
     'add_to_cart' => 'Add to Cart',
     'in_stock' => 'In stock',
     'x_left_in_stock' => 'Only :count left in stock',
+    'x_left' => ':count left',
     'out_of_stock' => 'Out of stock',
     'not_orderable_online' => 'Not available for online ordering',
     'view' => 'View',

@@ -101,7 +101,7 @@
                                                 @if($stock > 10)
                                                     <option value="{{ $size }}">{{ $size }}</option>
                                                 @elseif($stock > 0)
-                                                    <option value="{{ $size }}">{{ $size }} ({{ $stock }})</option>
+                                                    <option value="{{ $size }}">{{ $size }} ({{ __('shop.x_left', ['count' => $stock]) }})</option>
                                                 @else
                                                     <option value="{{ $size }}" disabled>{{ $size }} - {{ __('shop.out_of_stock') }}</option>
                                                 @endif

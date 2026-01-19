@@ -6,6 +6,7 @@ return [
     'add_to_cart' => 'In winkelwagen',
     'in_stock' => 'Op voorraad',
     'x_left_in_stock' => 'Nog :count op voorraad',
+    'x_left' => 'nog :count',
     'out_of_stock' => 'Uitverkocht',
     'not_orderable_online' => 'Niet online te bestellen',
     'view' => 'Bekijken',
