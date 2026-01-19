@@ -34,7 +34,11 @@
         </div>
     </a>
 
-    <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+    <div class="px-3 pb-3 sm:px-4 sm:pb-4 space-y-2">
+        <a href="{{ route('products.show', $product->slug) }}"
+           class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 px-3 rounded-lg transition-colors">
+            {{ __('shop.view') }}
+        </a>
         @if($product->isOrderable())
             <form action="{{ route('cart.add') }}" method="POST" data-add-to-cart>
                 @csrf
@@ -70,11 +74,6 @@
                     </button>
                 @endif
             </form>
-        @elseif($product->orderable === false)
-            <a href="{{ route('products.show', $product->slug) }}"
-               class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 px-3 rounded-lg transition-colors">
-                {{ __('shop.view') }}
-            </a>
         @endif
     </div>
 </div>
