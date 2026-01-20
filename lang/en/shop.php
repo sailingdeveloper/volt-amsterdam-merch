@@ -90,4 +90,8 @@ return [
     'admin_email_footer' => 'This is an automated notification from the Volt Amsterdam webshop.',
     'admin_view_order' => 'View Order in Admin',
     'admin_language' => 'Language',
+
+    // Admin Actions
+    'cancel_order' => 'Cancel Order',
+    'cancel_order_confirm' => 'Are you sure you want to cancel this order?',
 ];
