@@ -90,8 +90,4 @@ return [
     'admin_email_footer' => 'Dit is een automatische melding van de Volt Amsterdam webshop.',
     'admin_view_order' => 'Bekijk bestelling in admin',
     'admin_language' => 'Taal',
-
-    // Admin Actions
-    'cancel_order' => 'Annuleren',
-    'cancel_order_confirm' => 'Weet je zeker dat je deze bestelling wilt annuleren?',
 ];

@@ -14,12 +14,12 @@ class ViewOrder extends ViewRecord
     {
         return [
             Actions\Action::make('cancel')
-                ->label(__('shop.cancel_order'))
+                ->label('Cancel')
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->modalHeading(__('shop.cancel_order'))
-                ->modalDescription(__('shop.cancel_order_confirm'))
+                ->modalHeading('Cancel Order')
+                ->modalDescription('Are you sure you want to cancel this order?')
                 ->action(fn () => $this->record->update(['status' => 'canceled']))
                 ->hidden(fn (): bool => $this->record->status === 'canceled'),
         ];
