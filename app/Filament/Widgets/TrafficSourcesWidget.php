@@ -64,13 +64,16 @@ class TrafficSourcesWidget extends BaseWidget
      */
     private function formatReferrer(string $referrer): string
     {
-        $host = parse_url($referrer, PHP_URL_HOST);
+        $parsed = parse_url($referrer);
 
-        if (empty($host)) {
+        if (empty($parsed['host'])) {
             return $referrer;
         }
 
-        // Remove www. prefix.
-        return preg_replace('/^www\./', '', $host);
+        // Remove www. prefix from host.
+        $host = preg_replace('/^www\./', '', $parsed['host']);
+        $path = $parsed['path'] ?? '';
+
+        return $host . $path;
     }
 }
