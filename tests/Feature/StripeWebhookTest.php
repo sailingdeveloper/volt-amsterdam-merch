@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use App\Services\StripeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -198,5 +200,265 @@ class StripeWebhookTest extends TestCase
         $order->refresh();
 
         $this->assertEquals('paid', $order->status);
+    }
+
+    public function test_stock_decrements_for_product_without_sizes_when_order_is_paid(): void
+    {
+        Mail::fake();
+
+        $product = Product::factory()->create([
+            'stock' => 10,
+            'sizes' => null,
+        ]);
+
+        $order = Order::create([
+            'stripe_payment_intent_id' => 'pi_test_stock',
+            'customer_email' => 'customer@example.com',
+            'customer_name' => 'Test Customer',
+            'subtotal' => 2500,
+            'fee' => 29,
+            'total' => 2532,
+            'status' => 'pending',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 3,
+            'price' => 2500,
+        ]);
+
+        $mockPaymentIntent = new \stdClass();
+        $mockPaymentIntent->id = 'pi_test_stock';
+
+        $stripeService = new StripeService();
+        $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
+
+        $product->refresh();
+        $order->refresh();
+
+        $this->assertEquals('paid', $order->status);
+        $this->assertEquals(7, $product->stock);
+    }
+
+    public function test_stock_decrements_for_product_with_sizes_when_order_is_paid(): void
+    {
+        Mail::fake();
+
+        $product = Product::factory()->create([
+            'stock' => null,
+            'sizes' => [
+                'S' => 10,
+                'M' => 15,
+                'L' => 20,
+            ],
+        ]);
+
+        $order = Order::create([
+            'stripe_payment_intent_id' => 'pi_test_size_stock',
+            'customer_email' => 'customer@example.com',
+            'customer_name' => 'Test Customer',
+            'subtotal' => 2500,
+            'fee' => 29,
+            'total' => 2532,
+            'status' => 'pending',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'size' => 'M',
+            'quantity' => 4,
+            'price' => 2500,
+        ]);
+
+        $mockPaymentIntent = new \stdClass();
+        $mockPaymentIntent->id = 'pi_test_size_stock';
+
+        $stripeService = new StripeService();
+        $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
+
+        $product->refresh();
+        $order->refresh();
+
+        $this->assertEquals('paid', $order->status);
+        $this->assertEquals(11, $product->sizes['M']);
+        $this->assertEquals(10, $product->sizes['S']);
+        $this->assertEquals(20, $product->sizes['L']);
+    }
+
+    public function test_stock_decrements_for_multiple_items_in_order(): void
+    {
+        Mail::fake();
+
+        $product1 = Product::factory()->create([
+            'stock' => 10,
+            'sizes' => null,
+        ]);
+
+        $product2 = Product::factory()->create([
+            'stock' => null,
+            'sizes' => [
+                'S' => 20,
+                'L' => 30,
+            ],
+        ]);
+
+        $order = Order::create([
+            'stripe_payment_intent_id' => 'pi_test_multiple',
+            'customer_email' => 'customer@example.com',
+            'customer_name' => 'Test Customer',
+            'subtotal' => 5000,
+            'fee' => 29,
+            'total' => 5029,
+            'status' => 'pending',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product1->id,
+            'quantity' => 2,
+            'price' => 2500,
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product2->id,
+            'size' => 'S',
+            'quantity' => 5,
+            'price' => 2500,
+        ]);
+
+        $mockPaymentIntent = new \stdClass();
+        $mockPaymentIntent->id = 'pi_test_multiple';
+
+        $stripeService = new StripeService();
+        $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
+
+        $product1->refresh();
+        $product2->refresh();
+        $order->refresh();
+
+        $this->assertEquals('paid', $order->status);
+        $this->assertEquals(8, $product1->stock);
+        $this->assertEquals(15, $product2->sizes['S']);
+        $this->assertEquals(30, $product2->sizes['L']);
+    }
+
+    public function test_stock_does_not_go_below_zero(): void
+    {
+        Mail::fake();
+
+        $product = Product::factory()->create([
+            'stock' => 2,
+            'sizes' => null,
+        ]);
+
+        $order = Order::create([
+            'stripe_payment_intent_id' => 'pi_test_zero',
+            'customer_email' => 'customer@example.com',
+            'customer_name' => 'Test Customer',
+            'subtotal' => 2500,
+            'fee' => 29,
+            'total' => 2532,
+            'status' => 'pending',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 5,
+            'price' => 2500,
+        ]);
+
+        $mockPaymentIntent = new \stdClass();
+        $mockPaymentIntent->id = 'pi_test_zero';
+
+        $stripeService = new StripeService();
+        $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
+
+        $product->refresh();
+
+        $this->assertEquals(0, $product->stock);
+    }
+
+    public function test_stock_does_not_go_below_zero_for_sizes(): void
+    {
+        Mail::fake();
+
+        $product = Product::factory()->create([
+            'stock' => null,
+            'sizes' => [
+                'M' => 2,
+            ],
+        ]);
+
+        $order = Order::create([
+            'stripe_payment_intent_id' => 'pi_test_size_zero',
+            'customer_email' => 'customer@example.com',
+            'customer_name' => 'Test Customer',
+            'subtotal' => 2500,
+            'fee' => 29,
+            'total' => 2532,
+            'status' => 'pending',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'size' => 'M',
+            'quantity' => 5,
+            'price' => 2500,
+        ]);
+
+        $mockPaymentIntent = new \stdClass();
+        $mockPaymentIntent->id = 'pi_test_size_zero';
+
+        $stripeService = new StripeService();
+        $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
+
+        $product->refresh();
+
+        $this->assertEquals(0, $product->sizes['M']);
+    }
+
+    public function test_stock_decrements_via_checkout_session_completed(): void
+    {
+        Mail::fake();
+
+        $product = Product::factory()->create([
+            'stock' => 10,
+            'sizes' => null,
+        ]);
+
+        $order = Order::create([
+            'stripe_session_id' => 'cs_test_stock',
+            'customer_email' => 'customer@example.com',
+            'customer_name' => 'Test Customer',
+            'subtotal' => 2500,
+            'fee' => 29,
+            'total' => 2532,
+            'status' => 'pending',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 2,
+            'price' => 2500,
+        ]);
+
+        $mockSession = new \stdClass();
+        $mockSession->id = 'cs_test_stock';
+        $mockSession->payment_intent = 'pi_test_session';
+
+        $stripeService = new StripeService();
+        $stripeService->handleCheckoutCompleted($mockSession);
+
+        $product->refresh();
+        $order->refresh();
+
+        $this->assertEquals('paid', $order->status);
+        $this->assertEquals(8, $product->stock);
     }
 }

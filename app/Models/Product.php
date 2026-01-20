@@ -165,7 +165,8 @@ class Product extends Model
     public function decrementStockForSize(string $size, int $quantity = 1): void
     {
         if ($this->hasSizes() === false) {
-            $this->decrement('stock', $quantity);
+            $this->stock = max(0, ($this->stock ?? 0) - $quantity);
+            $this->save();
             return;
         }
 
