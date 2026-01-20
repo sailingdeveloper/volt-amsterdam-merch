@@ -70,6 +70,7 @@ class OrderResource extends Resource
                                 'pending' => 'warning',
                                 'failed' => 'danger',
                                 'refunded' => 'gray',
+                                'canceled' => 'gray',
                                 default => 'gray',
                             }),
                         Infolists\Components\TextEntry::make('created_at')
@@ -122,6 +123,7 @@ class OrderResource extends Resource
                         'pending' => 'warning',
                         'failed' => 'danger',
                         'refunded' => 'gray',
+                        'canceled' => 'gray',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
@@ -136,10 +138,19 @@ class OrderResource extends Resource
                         'paid' => 'Paid',
                         'failed' => 'Failed',
                         'refunded' => 'Refunded',
+                        'canceled' => 'Canceled',
                     ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('cancel')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Cancel Order')
+                    ->modalDescription('Are you sure you want to cancel this order?')
+                    ->action(fn (Order $record) => $record->update(['status' => 'canceled']))
+                    ->hidden(fn (Order $record): bool => $record->status === 'canceled'),
             ])
             ->bulkActions([])
             ->defaultSort('created_at', 'desc');
