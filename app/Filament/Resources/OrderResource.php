@@ -143,15 +143,6 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\Action::make('cancel')
-                    ->label(__('shop.cancel_order'))
-                    ->icon('heroicon-o-x-circle')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->modalHeading(__('shop.cancel_order'))
-                    ->modalDescription(__('shop.cancel_order_confirm'))
-                    ->action(fn (Order $record) => $record->update(['status' => 'canceled']))
-                    ->hidden(fn (Order $record): bool => $record->status === 'canceled'),
             ])
             ->bulkActions([])
             ->defaultSort('created_at', 'desc');

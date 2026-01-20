@@ -13,7 +13,15 @@ class ViewOrder extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\Action::make('cancel')
+                ->label(__('shop.cancel_order'))
+                ->icon('heroicon-o-x-circle')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading(__('shop.cancel_order'))
+                ->modalDescription(__('shop.cancel_order_confirm'))
+                ->action(fn () => $this->record->update(['status' => 'canceled']))
+                ->hidden(fn (): bool => $this->record->status === 'canceled'),
         ];
     }
 }
