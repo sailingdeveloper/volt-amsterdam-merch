@@ -92,6 +92,6 @@ return [
     'admin_language' => 'Language',
 
     // Admin Actions
-    'cancel_order' => 'Cancel Order',
+    'cancel_order' => 'Cancel',
     'cancel_order_confirm' => 'Are you sure you want to cancel this order?',
 ];

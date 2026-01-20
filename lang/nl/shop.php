@@ -92,6 +92,6 @@ return [
     'admin_language' => 'Taal',
 
     // Admin Actions
-    'cancel_order' => 'Annuleer bestelling',
+    'cancel_order' => 'Annuleren',
     'cancel_order_confirm' => 'Weet je zeker dat je deze bestelling wilt annuleren?',
 ];
