@@ -28,8 +28,8 @@ return [
     'subtotal' => 'Subtotal',
     'processing_fee' => 'Processing fee',
     'total' => 'Total',
-    'checkout_with_ideal' => 'Checkout with iDEAL',
-    'secure_payment' => 'Secure payment via iDEAL',
+    'checkout_with_ideal' => 'Checkout with iDEAL | Wero',
+    'secure_payment' => 'Secure payment via iDEAL | Wero',
 
     // Cart messages
     'added_to_cart' => 'Item added to your cart.',
@@ -57,7 +57,7 @@ return [
     'country_be' => 'Belgium',
     'country_de' => 'Germany',
     'order_summary' => 'Order Summary',
-    'pay_with_ideal' => 'Pay with iDEAL',
+    'pay_with_ideal' => 'Pay with iDEAL | Wero',
     'payment' => 'Payment',
     'select_bank' => 'Select your bank',
     'pay_now' => 'Pay now',

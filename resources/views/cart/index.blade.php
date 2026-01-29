@@ -104,7 +104,7 @@
                             <span>&euro;{{ $subtotal }}</span>
                         </div>
                         <div class="flex justify-between text-gray-600">
-                            <span>{{ __('shop.processing_fee') }} (iDEAL)</span>
+                            <span>{{ __('shop.processing_fee') }} (iDEAL | Wero)</span>
                             <span>&euro;{{ $fee }}</span>
                         </div>
                         <div class="border-t border-gray-200 pt-3 flex justify-between text-lg font-semibold text-gray-900">

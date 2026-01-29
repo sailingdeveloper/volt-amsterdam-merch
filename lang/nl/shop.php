@@ -28,8 +28,8 @@ return [
     'subtotal' => 'Subtotaal',
     'processing_fee' => 'Transactiekosten',
     'total' => 'Totaal',
-    'checkout_with_ideal' => 'Afrekenen met iDEAL',
-    'secure_payment' => 'Veilig betalen via iDEAL',
+    'checkout_with_ideal' => 'Afrekenen met iDEAL | Wero',
+    'secure_payment' => 'Veilig betalen via iDEAL | Wero',
 
     // Cart messages
     'added_to_cart' => 'Product toegevoegd aan je winkelwagen.',
@@ -57,7 +57,7 @@ return [
     'country_be' => 'België',
     'country_de' => 'Duitsland',
     'order_summary' => 'Besteloverzicht',
-    'pay_with_ideal' => 'Betalen met iDEAL',
+    'pay_with_ideal' => 'Betalen met iDEAL | Wero',
     'payment' => 'Betaling',
     'select_bank' => 'Selecteer je bank',
     'pay_now' => 'Nu betalen',
