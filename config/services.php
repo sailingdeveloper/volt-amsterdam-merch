@@ -35,4 +35,31 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Services
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for payment providers. Set PAYMENT_PROVIDER in .env to
+    | switch between 'stripe' and 'mollie'.
+    |
+    */
+
+    'payment' => [
+        'provider' => env('PAYMENT_PROVIDER', 'stripe'),
+    ],
+
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'fee_cents' => 29,
+    ],
+
+    'mollie' => [
+        'key' => env('MOLLIE_API_KEY'),
+        'webhook_url' => env('MOLLIE_WEBHOOK_URL'),
+        'fee_cents' => 40,
+    ],
+
 ];

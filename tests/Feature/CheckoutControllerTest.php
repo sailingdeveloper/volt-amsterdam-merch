@@ -2,10 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Contracts\PaymentServiceInterface;
 use App\Models\Order;
 use App\Models\Product;
 use App\Services\CartService;
-use App\Services\StripeService;
+use App\Services\Payment\PaymentResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
@@ -18,6 +19,8 @@ class CheckoutControllerTest extends TestCase
     {
         parent::setUp();
         $this->get('/language/en');
+        // Use stripe provider for consistent fee testing (29 cents).
+        config(['services.payment.provider' => 'stripe']);
     }
 
     public function test_checkout_page_redirects_if_cart_is_empty(): void
@@ -94,7 +97,7 @@ class CheckoutControllerTest extends TestCase
         $response->assertSessionHasErrors(['email', 'name', 'billing_address_line1', 'billing_postal_code', 'billing_city']);
     }
 
-    public function test_checkout_creates_order_and_shows_payment_page(): void
+    public function test_checkout_creates_order_with_stripe_provider(): void
     {
         $product = Product::factory()->create([
             'price' => 2500,
@@ -105,20 +108,22 @@ class CheckoutControllerTest extends TestCase
         $cartService = app(CartService::class);
         $cartService->add($product->id, 2);
 
-        // Create a mock payment intent object.
-        $mockPaymentIntent = new \stdClass();
-        $mockPaymentIntent->id = 'pi_test_123';
-        $mockPaymentIntent->client_secret = 'pi_test_123_secret_abc';
+        // Create a mock payment result.
+        $paymentResult = new PaymentResult(
+            paymentId: 'pi_test_123',
+            clientSecret: 'pi_test_123_secret_abc',
+        );
 
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('createPaymentIntent')
+        $mockPaymentService = Mockery::mock(PaymentServiceInterface::class);
+        $mockPaymentService->shouldReceive('getProvider')->andReturn('stripe');
+        $mockPaymentService->shouldReceive('createPayment')
             ->once()
-            ->andReturn($mockPaymentIntent);
+            ->andReturn($paymentResult);
 
-        $this->app->instance(StripeService::class, $mockStripeService);
+        $this->app->instance(PaymentServiceInterface::class, $mockPaymentService);
 
         $response = $this->post('/checkout', [
-            'email' => 'customer@example.com',
+            'email' => 'test@gmail.com',
             'name' => 'John Doe',
             'phone' => '+31612345678',
             'billing_address_line1' => 'Main Street 123',
@@ -131,10 +136,12 @@ class CheckoutControllerTest extends TestCase
         $response->assertSee('Select your bank');
         $response->assertSee('pi_test_123_secret_abc');
 
-        // Verify order was created with customer information.
+        // Verify order was created with customer information and payment provider.
         $this->assertDatabaseHas('orders', [
+            'payment_id' => 'pi_test_123',
+            'payment_provider' => 'stripe',
             'stripe_payment_intent_id' => 'pi_test_123',
-            'customer_email' => 'customer@example.com',
+            'customer_email' => 'test@gmail.com',
             'customer_name' => 'John Doe',
             'customer_phone' => '+31612345678',
             'billing_address_line1' => 'Main Street 123',
@@ -147,16 +154,64 @@ class CheckoutControllerTest extends TestCase
         ]);
 
         // Verify order items were created.
-        $order = Order::where('stripe_payment_intent_id', 'pi_test_123')->first();
+        $order = Order::where('payment_id', 'pi_test_123')->first();
         $this->assertCount(1, $order->item);
         $this->assertEquals($product->id, $order->item->first()->product_id);
         $this->assertEquals(2, $order->item->first()->quantity);
+    }
+
+    public function test_checkout_redirects_to_mollie_payment_page(): void
+    {
+        $product = Product::factory()->create([
+            'price' => 2500,
+            'stock' => 10,
+        ]);
+
+        // Add item to cart.
+        $cartService = app(CartService::class);
+        $cartService->add($product->id, 2);
+
+        // Create a mock payment result with redirect URL (Mollie flow).
+        $paymentResult = new PaymentResult(
+            paymentId: 'tr_test_123',
+            redirectUrl: 'https://www.mollie.com/checkout/test',
+        );
+
+        $mockPaymentService = Mockery::mock(PaymentServiceInterface::class);
+        $mockPaymentService->shouldReceive('getProvider')->andReturn('mollie');
+        $mockPaymentService->shouldReceive('createPayment')
+            ->once()
+            ->andReturn($paymentResult);
+
+        $this->app->instance(PaymentServiceInterface::class, $mockPaymentService);
+
+        $response = $this->post('/checkout', [
+            'email' => 'test@gmail.com',
+            'name' => 'John Doe',
+            'phone' => '+31612345678',
+            'billing_address_line1' => 'Main Street 123',
+            'billing_postal_code' => '1234AB',
+            'billing_city' => 'Amsterdam',
+        ]);
+
+        // Mollie payments should redirect to the payment URL.
+        $response->assertRedirect('https://www.mollie.com/checkout/test');
+
+        // Verify order was created with Mollie provider.
+        $this->assertDatabaseHas('orders', [
+            'payment_id' => 'tr_test_123',
+            'payment_provider' => 'mollie',
+            'customer_email' => 'test@gmail.com',
+            'status' => 'pending',
+        ]);
     }
 
     public function test_checkout_success_page_displays_order(): void
     {
         $order = Order::create([
             'stripe_payment_intent_id' => 'pi_test_456',
+            'payment_id' => 'pi_test_456',
+            'payment_provider' => 'stripe',
             'customer_email' => 'test@example.com',
             'customer_name' => 'Test User',
             'subtotal' => 5000,
@@ -172,6 +227,36 @@ class CheckoutControllerTest extends TestCase
         $response->assertSee('50,29');
     }
 
+    public function test_checkout_success_for_mollie_payment(): void
+    {
+        $order = Order::create([
+            'payment_id' => 'tr_test_mollie',
+            'payment_provider' => 'mollie',
+            'customer_email' => 'test@example.com',
+            'customer_name' => 'Test User',
+            'subtotal' => 5000,
+            'fee' => 29,
+            'total' => 5029,
+            'status' => 'paid',
+        ]);
+
+        // Mock payment service for getPayment call.
+        $mockPayment = Mockery::mock();
+        $mockPayment->shouldReceive('isPaid')->andReturn(true);
+
+        $mockPaymentService = Mockery::mock(PaymentServiceInterface::class);
+        $mockPaymentService->shouldReceive('getPayment')
+            ->with('tr_test_mollie')
+            ->andReturn($mockPayment);
+
+        $this->app->instance(PaymentServiceInterface::class, $mockPaymentService);
+
+        $response = $this->get('/checkout/success?order_id=' . $order->id);
+
+        $response->assertStatus(200);
+        $response->assertSee('Order Confirmed');
+    }
+
     public function test_checkout_marks_cart_as_converted(): void
     {
         $product = Product::factory()->create([
@@ -182,21 +267,23 @@ class CheckoutControllerTest extends TestCase
         // Add item to cart.
         $this->post('/cart/add', ['product_id' => $product->id]);
 
-        // Mock Stripe service.
-        $mockPaymentIntent = new \stdClass();
-        $mockPaymentIntent->id = 'pi_test_converted';
-        $mockPaymentIntent->client_secret = 'pi_test_converted_secret';
+        // Mock payment service.
+        $paymentResult = new PaymentResult(
+            paymentId: 'pi_test_converted',
+            clientSecret: 'pi_test_converted_secret',
+        );
 
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('createPaymentIntent')
+        $mockPaymentService = Mockery::mock(PaymentServiceInterface::class);
+        $mockPaymentService->shouldReceive('getProvider')->andReturn('stripe');
+        $mockPaymentService->shouldReceive('createPayment')
             ->once()
-            ->andReturn($mockPaymentIntent);
+            ->andReturn($paymentResult);
 
-        $this->app->instance(StripeService::class, $mockStripeService);
+        $this->app->instance(PaymentServiceInterface::class, $mockPaymentService);
 
         // Go through checkout.
         $this->post('/checkout', [
-            'email' => 'customer@example.com',
+            'email' => 'test@gmail.com',
             'name' => 'John Doe',
             'phone' => '+31612345678',
             'billing_address_line1' => 'Main Street 123',
@@ -205,7 +292,7 @@ class CheckoutControllerTest extends TestCase
         ]);
 
         // Verify cart is marked as converted and linked to order.
-        $order = Order::where('stripe_payment_intent_id', 'pi_test_converted')->first();
+        $order = Order::where('payment_id', 'pi_test_converted')->first();
         $this->assertNotNull($order);
         $this->assertNotNull($order->cart);
         $this->assertEquals('converted', $order->cart->status);
@@ -222,6 +309,8 @@ class CheckoutControllerTest extends TestCase
     {
         $order = Order::create([
             'stripe_payment_intent_id' => 'pi_test_failed',
+            'payment_id' => 'pi_test_failed',
+            'payment_provider' => 'stripe',
             'customer_email' => 'test@example.com',
             'customer_name' => 'Test User',
             'subtotal' => 5000,

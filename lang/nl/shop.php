@@ -29,7 +29,7 @@ return [
     'processing_fee' => 'Transactiekosten',
     'total' => 'Totaal',
     'checkout_with_ideal' => 'Afrekenen met iDEAL',
-    'secure_payment' => 'Veilig betalen via Stripe',
+    'secure_payment' => 'Veilig betalen via iDEAL',
 
     // Cart messages
     'added_to_cart' => 'Product toegevoegd aan je winkelwagen.',

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\MollieWebhookController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -29,5 +30,6 @@ Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('che
 // Language switcher.
 Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
-// Stripe webhook (excluded from CSRF).
+// Payment webhooks (excluded from CSRF).
 Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle'])->name('webhook.stripe');
+Route::post('/webhook/mollie', [MollieWebhookController::class, 'handle'])->name('webhook.mollie');

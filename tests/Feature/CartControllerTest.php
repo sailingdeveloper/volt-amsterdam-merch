@@ -14,6 +14,8 @@ class CartControllerTest extends TestCase
     {
         parent::setUp();
         $this->get('/language/en');
+        // Use stripe provider for consistent fee testing (29 cents).
+        config(['services.payment.provider' => 'stripe']);
     }
 
     public function test_cart_page_loads_successfully(): void

@@ -131,7 +131,7 @@ class StripeWebhookTest extends TestCase
         $mockSession->id = 'cs_test_update';
         $mockSession->payment_intent = 'pi_test_456';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handleCheckoutCompleted($mockSession);
 
         $order->refresh();
@@ -194,7 +194,7 @@ class StripeWebhookTest extends TestCase
         $mockPaymentIntent = new \stdClass();
         $mockPaymentIntent->id = 'pi_test_success';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
 
         $order->refresh();
@@ -231,7 +231,7 @@ class StripeWebhookTest extends TestCase
         $mockPaymentIntent = new \stdClass();
         $mockPaymentIntent->id = 'pi_test_stock';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
 
         $product->refresh();
@@ -275,7 +275,7 @@ class StripeWebhookTest extends TestCase
         $mockPaymentIntent = new \stdClass();
         $mockPaymentIntent->id = 'pi_test_size_stock';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
 
         $product->refresh();
@@ -332,7 +332,7 @@ class StripeWebhookTest extends TestCase
         $mockPaymentIntent = new \stdClass();
         $mockPaymentIntent->id = 'pi_test_multiple';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
 
         $product1->refresh();
@@ -374,7 +374,7 @@ class StripeWebhookTest extends TestCase
         $mockPaymentIntent = new \stdClass();
         $mockPaymentIntent->id = 'pi_test_zero';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
 
         $product->refresh();
@@ -414,7 +414,7 @@ class StripeWebhookTest extends TestCase
         $mockPaymentIntent = new \stdClass();
         $mockPaymentIntent->id = 'pi_test_size_zero';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handlePaymentIntentSucceeded($mockPaymentIntent);
 
         $product->refresh();
@@ -452,7 +452,7 @@ class StripeWebhookTest extends TestCase
         $mockSession->id = 'cs_test_stock';
         $mockSession->payment_intent = 'pi_test_session';
 
-        $stripeService = new StripeService();
+        $stripeService = app(StripeService::class);
         $stripeService->handleCheckoutCompleted($mockSession);
 
         $product->refresh();

@@ -89,14 +89,26 @@ class OrderResource extends Resource
                             ->weight('bold'),
                     ])->columns(3),
 
-                Infolists\Components\Section::make('Stripe')
+                Infolists\Components\Section::make('Payment Provider')
                     ->schema([
+                        Infolists\Components\TextEntry::make('payment_provider')
+                            ->label('Provider')
+                            ->placeholder('stripe')
+                            ->formatStateUsing(fn (?string $state): string => ucfirst($state ?? 'stripe')),
+                        Infolists\Components\TextEntry::make('payment_id')
+                            ->label('Payment ID')
+                            ->copyable()
+                            ->placeholder('-'),
                         Infolists\Components\TextEntry::make('stripe_session_id')
-                            ->label('Session ID')
-                            ->copyable(),
+                            ->label('Stripe Session ID')
+                            ->copyable()
+                            ->placeholder('-')
+                            ->visible(fn ($record) => $record->stripe_session_id !== null),
                         Infolists\Components\TextEntry::make('stripe_payment_intent_id')
-                            ->label('Payment Intent ID')
-                            ->copyable(),
+                            ->label('Stripe Payment Intent ID')
+                            ->copyable()
+                            ->placeholder('-')
+                            ->visible(fn ($record) => $record->stripe_payment_intent_id !== null),
                     ])->columns(2)->collapsed(),
             ]);
     }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\PaymentServiceInterface;
 use App\Models\Order;
 use App\Services\CartService;
+use App\Services\OrderService;
 use App\Services\StripeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +15,9 @@ class CheckoutController extends Controller
 {
     public function __construct(
         protected CartService $cartService,
-        protected StripeService $stripeService
+        protected PaymentServiceInterface $paymentService,
+        protected StripeService $stripeService,
+        protected OrderService $orderService
     ) {}
 
     /**
@@ -56,7 +60,7 @@ class CheckoutController extends Controller
 
         $itemsWithProduct = $this->cartService->getItemWithProduct();
 
-        // Create the order with customer information.
+        // Create the order with customer information and payment provider.
         $order = Order::create([
             'customer_email' => $validated['email'],
             'customer_name' => $validated['name'],
@@ -69,6 +73,7 @@ class CheckoutController extends Controller
             'total' => $this->cartService->getTotal(),
             'status' => 'pending',
             'locale' => app()->getLocale(),
+            'payment_provider' => $this->paymentService->getProvider(),
         ]);
 
         // Create order items.
@@ -81,25 +86,32 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Create Payment Intent.
-        $paymentIntent = $this->stripeService->createPaymentIntent(
-            $order->total,
-            (string) $order->id,
-            $validated['email'],
-            $validated['name'],
-        );
+        // Create payment using the configured provider.
+        $paymentResult = $this->paymentService->createPayment($order);
 
-        // Update order with Payment Intent ID.
-        $order->update(['stripe_payment_intent_id' => $paymentIntent->id]);
+        // Update order with payment ID.
+        $updateData = ['payment_id' => $paymentResult->paymentId];
+
+        // Also store in Stripe-specific field for backward compatibility.
+        if ($this->paymentService->getProvider() === 'stripe') {
+            $updateData['stripe_payment_intent_id'] = $paymentResult->paymentId;
+        }
+
+        $order->update($updateData);
 
         // Mark cart as converted and link to order.
         $this->cartService->markConverted($order);
 
+        // Handle redirect flow (Mollie) vs client-side flow (Stripe).
+        if ($paymentResult->requiresRedirect()) {
+            return redirect()->away($paymentResult->redirectUrl);
+        }
+
         return view('checkout.payment', [
             'order' => $order,
-            'clientSecret' => $paymentIntent->client_secret,
+            'clientSecret' => $paymentResult->clientSecret,
             'customerName' => $validated['name'],
-            'stripeKey' => config('stripe.key'),
+            'stripeKey' => config('services.stripe.key'),
             'returnUrl' => route('checkout.success'),
         ]);
     }
@@ -109,33 +121,66 @@ class CheckoutController extends Controller
      */
     public function success(Request $request): View|RedirectResponse
     {
+        // Mollie payment flow (uses order_id in redirect).
+        $mollieOrderId = $request->query('order_id');
+        if ($mollieOrderId !== null) {
+            return $this->handleMollieSuccess($mollieOrderId);
+        }
+
+        // Stripe Payment Intent flow.
         $paymentIntentId = $request->query('payment_intent');
         $redirectStatus = $request->query('redirect_status');
 
-        // Legacy support for Checkout Sessions.
-        $sessionId = $request->query('session_id');
-        if ($sessionId !== null) {
-            $order = Order::where('stripe_session_id', $sessionId)->first();
-
-            if ($order === null) {
-                return redirect()->route('products.index');
-            }
-
-            if ($order->status === 'pending') {
-                $session = $this->stripeService->getSession($sessionId);
-                $this->stripeService->handleCheckoutCompleted($session);
-                $order->refresh();
-            }
-
-            return view('checkout.success', compact('order'));
+        if ($paymentIntentId !== null) {
+            return $this->handleStripeSuccess($paymentIntentId, $redirectStatus);
         }
 
-        // Payment Intent flow.
-        if ($paymentIntentId === null) {
+        // Legacy support for Stripe Checkout Sessions.
+        $sessionId = $request->query('session_id');
+        if ($sessionId !== null) {
+            return $this->handleStripeSessionSuccess($sessionId);
+        }
+
+        return redirect()->route('products.index');
+    }
+
+    /**
+     * Handle Mollie payment success.
+     */
+    protected function handleMollieSuccess(string $orderId): View|RedirectResponse
+    {
+        $order = Order::find($orderId);
+
+        if ($order === null || $order->payment_provider !== 'mollie') {
             return redirect()->route('products.index');
         }
 
-        $order = Order::where('stripe_payment_intent_id', $paymentIntentId)->first();
+        // Check payment status with Mollie if order is still pending.
+        if ($order->status === 'pending' && $order->payment_id !== null) {
+            $payment = $this->paymentService->getPayment($order->payment_id);
+
+            if ($payment->isPaid()) {
+                $this->orderService->markOrderPaid($order);
+                $order->refresh();
+            }
+        }
+
+        if ($order->status !== 'paid') {
+            return redirect()->route('checkout.cancel')
+                ->with('error', __('shop.payment_failed'));
+        }
+
+        return view('checkout.success', compact('order'));
+    }
+
+    /**
+     * Handle Stripe Payment Intent success.
+     */
+    protected function handleStripeSuccess(string $paymentIntentId, ?string $redirectStatus): View|RedirectResponse
+    {
+        $order = Order::where('stripe_payment_intent_id', $paymentIntentId)
+            ->orWhere('payment_id', $paymentIntentId)
+            ->first();
 
         if ($order === null) {
             return redirect()->route('products.index');
@@ -151,6 +196,26 @@ class CheckoutController extends Controller
         if ($order->status !== 'paid') {
             return redirect()->route('checkout.cancel')
                 ->with('error', __('shop.payment_failed'));
+        }
+
+        return view('checkout.success', compact('order'));
+    }
+
+    /**
+     * Handle legacy Stripe Checkout Session success.
+     */
+    protected function handleStripeSessionSuccess(string $sessionId): View|RedirectResponse
+    {
+        $order = Order::where('stripe_session_id', $sessionId)->first();
+
+        if ($order === null) {
+            return redirect()->route('products.index');
+        }
+
+        if ($order->status === 'pending') {
+            $session = $this->stripeService->getSession($sessionId);
+            $this->stripeService->handleCheckoutCompleted($session);
+            $order->refresh();
         }
 
         return view('checkout.success', compact('order'));

@@ -228,7 +228,9 @@ class CartService
             return 0;
         }
 
-        return config('stripe.ideal_fee_cents', 32);
+        $provider = config('services.payment.provider', 'stripe');
+
+        return config("services.{$provider}.fee_cents", 29);
     }
 
     /**

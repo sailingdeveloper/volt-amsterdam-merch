@@ -11,6 +11,8 @@ class Order extends Model
     protected $fillable = [
         'stripe_session_id',
         'stripe_payment_intent_id',
+        'payment_provider',
+        'payment_id',
         'customer_email',
         'customer_name',
         'customer_phone',

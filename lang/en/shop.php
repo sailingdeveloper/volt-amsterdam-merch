@@ -29,7 +29,7 @@ return [
     'processing_fee' => 'Processing fee',
     'total' => 'Total',
     'checkout_with_ideal' => 'Checkout with iDEAL',
-    'secure_payment' => 'Secure payment via Stripe',
+    'secure_payment' => 'Secure payment via iDEAL',
 
     // Cart messages
     'added_to_cart' => 'Item added to your cart.',

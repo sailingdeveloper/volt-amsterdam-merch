@@ -2,11 +2,7 @@
 
 namespace App\Services;
 
-use App\Mail\AdminOrderNotification;
-use App\Mail\OrderConfirmation;
 use App\Models\Order;
-use App\Models\User;
-use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 use Stripe\Customer;
 use Stripe\PaymentIntent;
@@ -15,9 +11,10 @@ use Stripe\Webhook;
 
 class StripeService
 {
-    public function __construct()
-    {
-        Stripe::setApiKey(config('stripe.secret'));
+    public function __construct(
+        protected OrderService $orderService
+    ) {
+        Stripe::setApiKey(config('services.stripe.secret'));
     }
 
     /**
@@ -141,7 +138,7 @@ class StripeService
         return Webhook::constructEvent(
             $payload,
             $signature,
-            config('stripe.webhook_secret')
+            config('services.stripe.webhook_secret')
         );
     }
 
@@ -155,7 +152,10 @@ class StripeService
         $order = Order::where('stripe_session_id', $session->id)->first();
 
         if ($order !== null) {
-            $this->markOrderPaid($order, $session->payment_intent ?? null);
+            if ($session->payment_intent !== null) {
+                $order->update(['stripe_payment_intent_id' => $session->payment_intent]);
+            }
+            $this->orderService->markOrderPaid($order);
         }
     }
 
@@ -166,62 +166,12 @@ class StripeService
      */
     public function handlePaymentIntentSucceeded(object $paymentIntent): void
     {
-        $order = Order::where('stripe_payment_intent_id', $paymentIntent->id)->first();
+        $order = Order::where('stripe_payment_intent_id', $paymentIntent->id)
+            ->orWhere('payment_id', $paymentIntent->id)
+            ->first();
 
         if ($order !== null && $order->status !== 'paid') {
-            $this->markOrderPaid($order, $paymentIntent->id);
-        }
-    }
-
-    /**
-     * Mark an order as paid and process it.
-     */
-    protected function markOrderPaid(Order $order, ?string $paymentIntentId): void
-    {
-        if ($order->status === 'paid') {
-            return;
-        }
-
-        $order->update([
-            'status' => 'paid',
-            'stripe_payment_intent_id' => $paymentIntentId,
-        ]);
-
-        // Decrement stock for each order item.
-        foreach ($order->item as $orderItem) {
-            if ($orderItem->product !== null) {
-                $orderItem->product->decrementStockForSize(
-                    $orderItem->size ?? '',
-                    $orderItem->quantity
-                );
-            }
-        }
-
-        $this->sendOrderConfirmationEmail($order);
-    }
-
-    /**
-     * Send order confirmation email to the customer and notification to all admins.
-     */
-    protected function sendOrderConfirmationEmail(Order $order): void
-    {
-        try {
-            // Send confirmation to customer.
-            if ($order->customer_email !== null) {
-                Mail::to($order->customer_email)->send(new OrderConfirmation($order));
-            }
-
-            // Send notification to all admins.
-            $adminEmails = User::pluck('email')->toArray();
-            foreach ($adminEmails as $adminEmail) {
-                Mail::to($adminEmail)->send(new AdminOrderNotification($order));
-            }
-        } catch (\Exception $e) {
-            // Log the error but don't break the checkout flow.
-            \Illuminate\Support\Facades\Log::error('Failed to send order confirmation email', [
-                'order_id' => $order->id,
-                'error' => $e->getMessage(),
-            ]);
+            $this->orderService->markOrderPaid($order);
         }
     }
 }

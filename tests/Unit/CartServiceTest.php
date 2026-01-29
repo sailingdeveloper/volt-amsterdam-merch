@@ -16,6 +16,8 @@ class CartServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // Use stripe provider for consistent fee testing (29 cents).
+        config(['services.payment.provider' => 'stripe']);
         $this->cartService = new CartService();
     }
 
